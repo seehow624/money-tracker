@@ -1,0 +1,20 @@
+CREATE TABLE `scheduled_rules` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`name` text NOT NULL,
+	`type` text DEFAULT 'expense' NOT NULL,
+	`amount` real NOT NULL,
+	`currency` text DEFAULT 'MYR' NOT NULL,
+	`account_id` integer NOT NULL,
+	`to_account_id` integer,
+	`category_id` integer,
+	`description` text,
+	`paid_by` text DEFAULT 'me' NOT NULL,
+	`notes` text,
+	`day_of_month` integer NOT NULL,
+	`start_date` text NOT NULL,
+	`end_date` text,
+	`next_due_date` text NOT NULL,
+	`last_run_date` text,
+	`active` integer DEFAULT true NOT NULL,
+	`created_at` text DEFAULT (CURRENT_TIMESTAMP) NOT NULL
+);

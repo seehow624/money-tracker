@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Money Tracker · Redesign Prototype</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    /* Brand */
+    --tangerine: #F28500;
+    --tangerine-50: #FFF7ED;
+    --tangerine-100: #FFEDD5;
+    --tangerine-200: #FED7AA;
+    --tangerine-300: #FDBA74;
+    --tangerine-400: #FB923C;
+    --tangerine-500: #F28500;
+    --tangerine-600: #D97706;
+    --tangerine-700: #B45309;
+    --tangerine-800: #92400E;
+    --tangerine-900: #78350F;
+
+    /* Greens (success/savings) */
+    --emerald-50: #ECFDF5;
+    --emerald-500: #10B981;
+    --emerald-700: #047857;
+
+    /* Reds (danger/overspend) */
+    --rose-50: #FFF1F2;
+    --rose-400: #FB7185;
+    --rose-500: #F43F5E;
+
+    /* Surfaces */
+    --surface: #FAFAFA;
+    --surface-raised: #FFFFFF;
+    --surface-overlay: #FFFFFF;
+    --ink: #18181B;
+    --ink-secondary: #52525B;
+    --ink-muted: #A1A1AA;
+    --border: #E4E4E7;
+    --border-light: #F4F4F5;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-card: 0 0 0 1px rgba(0,0,0,0.03), 0 2px 4px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+    --shadow-lg: 0 4px 6px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.08);
+
+    /* Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-2xl: 24px;
+    --radius-full: 9999px;
+
+    /* Typography */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+    
+    /* Motion */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .dark {
+    --surface: #0A0A0B;
+    --surface-raised: #141416;
+    --surface-overlay: #1C1C1F;
+    --ink: #FAFAFA;
+    --ink-secondary: #A1A1AA;
+    --ink-muted: #71717A;
+    --border: #27272A;
+    --border-light: #1F1F22;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+    --shadow-md: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+    --shadow-card: 0 0 0 1px rgba(255,255,255,0.04), 0 2px 4px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.4);
+    --shadow-lg: 0 4px 6px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.5);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  
+  body {
+    font-family: var(--font-sans);
+    background: var(--surface);
+    color: var(--ink);
+    line-height: 1.5;
+    min-height: 100vh;
+    transition: background 0.3s var(--ease-out);
+  }
+
+  /* Layout */
+  .container { max-width: 440px; margin: 0 auto; padding: 0 16px; }
+
+  /* App Bar */
+  .appbar {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--surface) 80%, transparent);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border-bottom: 1px solid var(--border);
+    padding: 0 16px;
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .appbar-title { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
+  .appbar-back {
+    width: 36px; height: 36px; border-radius: var(--radius-full);
+    border: none; background: var(--border);
+    color: var(--ink-secondary); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; transition: all 0.2s var(--ease-out);
+  }
+  .appbar-back:hover { background: var(--ink-secondary); opacity: 1; color: var(--surface); }
+
+  /* Card */
+  .card {
+    background: var(--surface-raised);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+  }
+  .card-interactive:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+  }
+  .card-interactive:active {
+    transform: scale(0.995);
+  }
+
+  /* Hero Card - Dashboard */
+  .hero-card {
+    background: linear-gradient(135deg, var(--surface-raised) 0%, color-mix(in srgb, var(--tangerine-50) 40%, var(--surface-raised)) 100%);
+    border: 1px solid color-mix(in srgb, var(--tangerine-200) 30%, var(--border));
+    border-radius: var(--radius-2xl);
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .dark .hero-card {
+    background: linear-gradient(135deg, var(--surface-raised) 0%, color-mix(in srgb, var(--tangerine-900) 30%, var(--surface-raised)) 100%);
+    border-color: color-mix(in srgb, var(--tangerine-800) 30%, var(--border));
+  }
+  .hero-card::after {
+    content: '';
+    position: absolute; top: -60px; right: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, var(--tangerine-300) 0%, transparent 70%);
+    opacity: 0.08; border-radius: 50%;
+    pointer-events: none;
+  }
+  .dark .hero-card::after {
+    background: radial-gradient(circle, var(--tangerine-600) 0%, transparent 70%);
+    opacity: 0.12;
+  }
+
+  .hero-budget-row {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 16px; position: relative; z-index: 1;
+  }
+  .hero-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); }
+  .hero-budget-amount { font-size: 36px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); line-height: 1; }
+  .hero-budget-currency { font-size: 16px; font-weight: 600; color: var(--ink-muted); margin-left: 4px; }
+
+  .hero-stats {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;
+    position: relative; z-index: 1;
+  }
+  .hero-stat {
+    background: var(--surface); border-radius: var(--radius-md);
+    padding: 10px 12px;
+  }
+  .dark .hero-stat { background: color-mix(in srgb, var(--surface) 80%, var(--surface-raised)); }
+  .hero-stat-value { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
+  .hero-stat-label { font-size: 10px; font-weight: 500; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+
+  /* Progress bar */
+  .progress-track {
+    height: 6px; background: var(--border);
+    border-radius: var(--radius-full); margin-top: 16px;
+    position: relative; z-index: 1; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: var(--radius-full);
+    background: linear-gradient(90deg, var(--tangerine-400), var(--tangerine-600));
+    transition: width 0.6s var(--ease-spring);
+  }
+  .progress-fill.warning { background: linear-gradient(90deg, var(--rose-400), var(--rose-500)); }
+  .progress-fill.safe { background: linear-gradient(90deg, var(--emerald-500), #059669); }
+
+  /* Section */
+  .section-header {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--ink-muted);
+    padding: 24px 0 8px 4px;
+  }
+
+  /* Settings Row */
+  .settings-card { border-radius: var(--radius-xl); overflow: hidden; }
+  .settings-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border-light);
+    cursor: pointer; transition: background 0.15s var(--ease-out);
+    text-decoration: none; color: inherit;
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-row:active { background: var(--border-light); }
+  .settings-row-icon {
+    width: 36px; height: 36px; border-radius: var(--radius-md);
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0; color: var(--ink-secondary);
+  }
+  .dark .settings-row-icon { background: color-mix(in srgb, var(--border) 50%, transparent); }
+  .settings-row-body { flex: 1; min-width: 0; }
+  .settings-row-title { font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: -0.01em; }
+  .settings-row-subtitle { font-size: 12px; color: var(--ink-muted); margin-top: 1px; }
+  .settings-row-chevron { color: var(--ink-muted); font-size: 16px; }
+  .settings-row-right { display: flex; align-items: center; gap: 8px; }
+  .badge-soon {
+    font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 2px 7px; border-radius: var(--radius-full);
+    background: var(--border); color: var(--ink-muted);
+  }
+
+  /* Toggle */
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; border-bottom: 1px solid var(--border-light);
+    cursor: pointer; transition: background 0.15s var(--ease-out);
+  }
+  .toggle-row:last-child { border-bottom: none; }
+  .toggle-row:active { background: var(--border-light); }
+  .toggle-left { display: flex; align-items: flex-start; gap: 12px; flex: 1; min-width: 0; }
+  .toggle-info { flex: 1; min-width: 0; }
+  .toggle-label { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .toggle-sub { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+
+  .toggle-switch {
+    width: 44px; height: 26px; border-radius: var(--radius-full);
+    background: var(--border); position: relative; flex-shrink: 0;
+    transition: background 0.25s var(--ease-out); cursor: pointer;
+  }
+  .toggle-switch.on { background: var(--tangerine-500); }
+  .toggle-knob {
+    position: absolute; top: 3px; left: 3px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #fff; box-shadow: var(--shadow-sm);
+    transition: transform 0.25s var(--ease-spring);
+  }
+  .toggle-switch.on .toggle-knob { transform: translateX(18px); }
+
+  /* Form elements */
+  .form-select, .form-input {
+    width: 100%; padding: 10px 14px; border-radius: var(--radius-md);
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--ink); font-size: 14px; font-family: var(--font-sans);
+    margin: 0 18px 12px; width: calc(100% - 36px);
+    transition: border-color 0.2s var(--ease-out);
+    appearance: none; -webkit-appearance: none;
+  }
+  .form-select:focus, .form-input:focus {
+    outline: none; border-color: var(--tangerine-500);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--tangerine-500) 15%, transparent);
+  }
+  .form-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23A1A1AA' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  /* Backup list item */
+  .backup-item {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    padding: 14px 18px; border-bottom: 1px solid var(--border-light);
+    gap: 8px;
+  }
+  .backup-item:last-child { border-bottom: none; }
+  .backup-name { font-size: 13px; font-weight: 600; font-family: var(--font-mono); color: var(--ink); }
+  .backup-meta { font-size: 11px; color: var(--ink-muted); margin-top: 3px; }
+  .backup-actions { display: flex; gap: 4px; margin-top: 8px; }
+  .backup-btn {
+    width: 32px; height: 32px; border-radius: var(--radius-full);
+    background: var(--surface); border: none; color: var(--ink-muted);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s var(--ease-out); font-size: 14px;
+  }
+  .dark .backup-btn { background: var(--border); }
+  .backup-btn:active { background: var(--tangerine-100); color: var(--tangerine-700); }
+  .dark .backup-btn:active { background: var(--tangerine-900); color: var(--tangerine-300); }
+  .btn-restore {
+    padding: 6px 14px; border-radius: var(--radius-full);
+    font-size: 12px; font-weight: 700; border: none; cursor: pointer;
+    background: var(--emerald-50); color: var(--emerald-700);
+    flex-shrink: 0; transition: all 0.15s var(--ease-out);
+  }
+  .dark .btn-restore { background: color-mix(in srgb, var(--emerald-500) 15%, var(--surface-raised)); color: var(--emerald-500); }
+  .btn-restore:active { transform: scale(0.96); filter: brightness(0.9); }
+
+  /* Message bar */
+  .message {
+    margin: 10px 16px 0; padding: 10px 14px; border-radius: var(--radius-md);
+    font-size: 13px; font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+    animation: slideIn 0.3s var(--ease-spring);
+  }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+  .message-ok { background: var(--emerald-50); color: var(--emerald-700); }
+  .dark .message-ok { background: color-mix(in srgb, var(--emerald-500) 12%, var(--surface-raised)); color: #6EE7B7; }
+  .message-err { background: var(--rose-50); color: var(--rose-500); }
+  .dark .message-err { background: color-mix(in srgb, var(--rose-500) 12%, var(--surface-raised)); color: #FDA4AF; }
+
+  /* Bottom note */
+  .footer-note { font-size: 11px; color: var(--ink-muted); text-align: center; padding: 24px 0 48px; }
+
+  /* View toggle */
+  .view-tabs {
+    display: flex; gap: 4px; padding: 4px;
+    background: var(--surface); border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+  }
+  .dark .view-tabs { background: var(--border); }
+  .view-tab {
+    flex: 1; padding: 7px 0; border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 600; border: none; cursor: pointer;
+    background: transparent; color: var(--ink-muted);
+    transition: all 0.2s var(--ease-out); text-align: center;
+  }
+  .view-tab.active {
+    background: var(--surface-raised); color: var(--ink);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Theme switch */
+  .theme-switch {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    background: var(--surface); border-radius: var(--radius-full);
+    padding: 3px; gap: 2px; border: 1px solid var(--border);
+  }
+  .dark .theme-switch { background: var(--border); }
+  .theme-option {
+    padding: 7px 0; border-radius: var(--radius-full);
+    font-size: 12px; font-weight: 600; border: none; cursor: pointer;
+    background: transparent; color: var(--ink-muted);
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    transition: all 0.25s var(--ease-out);
+  }
+  .theme-option.active {
+    background: var(--surface-raised); color: var(--ink);
+    box-shadow: var(--shadow-md);
+  }
+  .theme-option span { font-size: 14px; }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center; padding: 40px 24px; color: var(--ink-muted);
+  }
+  .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.5; }
+  .empty-title { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+  .empty-desc { font-size: 12px; }
+
+  /* Spacing utilities */
+  .mt-4 { margin-top: 16px; }
+  .mt-5 { margin-top: 20px; }
+  .mb-4 { margin-bottom: 16px; }
+  .mb-5 { margin-bottom: 20px; }
+  .gap-4 { gap: 16px; }
+
+  /* Responsive */
+  @media (max-width: 380px) {
+    .hero-stats { gap: 6px; }
+    .hero-stat { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- App Bar -->
+<div class="appbar">
+  <span class="appbar-title">Dashboard</span>
+  <span style="font-size:12px;color:var(--ink-muted)">May 2026 ▾</span>
+</div>
+
+<div style="padding-top:16px; display:flex; flex-direction:column; gap:16px;">
+
+<!-- ====== HERO CARD ====== -->
+<div class="hero-card">
+  <div class="hero-budget-row">
+    <div>
+      <div class="hero-label">Monthly Budget</div>
+      <div style="display:flex; align-items:baseline; gap:2px">
+        <span class="hero-budget-amount">RM 4,000</span>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:13px;font-weight:600;color:var(--ink)">RM 2,847</div>
+      <div style="font-size:10px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.04em">spent so far</div>
+    </div>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" style="width:71%"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;margin-top:6px;">
+    <span style="font-size:11px;color:var(--ink-muted)">71% used</span>
+    <span style="font-size:11px;color:var(--ink-muted)">RM 1,153 left</span>
+  </div>
+  <div class="hero-stats" style="margin-top:16px">
+    <div class="hero-stat">
+      <div class="hero-stat-value" style="color:var(--emerald-500)">+4,500</div>
+      <div class="hero-stat-label">Income</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-value">-2,847</div>
+      <div class="hero-stat-label">Expense</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-value">18d</div>
+      <div class="hero-stat-label">Days in</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== VIEW TABS ====== -->
+<div class="view-tabs">
+  <button class="view-tab active">Daily Log</button>
+  <button class="view-tab">Calendar</button>
+</div>
+
+<!-- ====== SETTINGS CARD (More page style) ====== -->
+<div class="card settings-card">
+  <a href="#" class="settings-row">
+    <div class="settings-row-icon">💾</div>
+    <div class="settings-row-body">
+      <div class="settings-row-title">Backup & Restore</div>
+      <div class="settings-row-subtitle">Save, export, restore, manage backups</div>
+    </div>
+    <span class="settings-row-chevron">›</span>
+  </a>
+  <a href="#" class="settings-row">
+    <div class="settings-row-icon">📊</div>
+    <div class="settings-row-body">
+      <div class="settings-row-title">Stats</div>
+      <div class="settings-row-subtitle">Category breakdown, trends</div>
+    </div>
+    <span class="settings-row-chevron">›</span>
+  </a>
+  <a href="#" class="settings-row">
+    <div class="settings-row-icon">💰</div>
+    <div class="settings-row-body">
+      <div class="settings-row-title">Balances</div>
+      <div class="settings-row-subtitle">Accounts & net worth</div>
+    </div>
+    <span class="settings-row-chevron">›</span>
+  </a>
+</div>
+
+<!-- ====== REMINDER TOGGLES ====== -->
+<div class="section-header">Daily Entry</div>
+<div class="card settings-card">
+  <div class="toggle-row" onclick="this.querySelector('.toggle-switch').classList.toggle('on')">
+    <div class="toggle-left">
+      <span class="settings-row-icon">📝</span>
+      <div class="toggle-info">
+        <div class="toggle-label">Entry Nudge</div>
+        <div class="toggle-sub">Remind if no transactions today at 21:00</div>
+      </div>
+    </div>
+    <div class="toggle-switch on"><div class="toggle-knob"></div></div>
+  </div>
+  <select class="form-select" style="width:calc(100% - 36px); margin: 0 18px 12px;">
+    <option>21:00</option><option>20:00</option><option>22:00</option>
+  </select>
+</div>
+
+<div class="section-header">Bill Due</div>
+<div class="card settings-card">
+  <div class="toggle-row" onclick="this.querySelector('.toggle-switch').classList.toggle('on')">
+    <div class="toggle-left">
+      <span class="settings-row-icon">💳</span>
+      <div class="toggle-info">
+        <div class="toggle-label">Payment Due Alerts</div>
+        <div class="toggle-sub">Notify 3 days before payment due</div>
+      </div>
+    </div>
+    <div class="toggle-switch on"><div class="toggle-knob"></div></div>
+  </div>
+  <select class="form-select" style="width:calc(100% - 36px); margin: 0 18px 12px;">
+    <option>3 days</option><option>1 day</option><option>5 days</option><option>7 days</option>
+  </select>
+</div>
+
+<!-- ====== BACKUP LIST ====== -->
+<div class="section-header">Saved Backups</div>
+<div class="message message-ok">
+  ✓ Restored! Restart dev server to apply.
+</div>
+<div class="card settings-card">
+  <div class="backup-item">
+    <div>
+      <div class="backup-name">backup-2026-05-07-08-15.db</div>
+      <div class="backup-meta">07 May 2026 08:15 · 2.3 MB</div>
+      <div class="backup-actions">
+        <button class="backup-btn">↓</button>
+        <button class="backup-btn">↗</button>
+        <button class="backup-btn">🗑</button>
+      </div>
+    </div>
+    <button class="btn-restore">Restore</button>
+  </div>
+  <div class="backup-item">
+    <div>
+      <div class="backup-name">backup-2026-05-06-21-30.db</div>
+      <div class="backup-meta">06 May 2026 21:30 · 2.2 MB</div>
+      <div class="backup-actions">
+        <button class="backup-btn">↓</button>
+        <button class="backup-btn">↗</button>
+        <button class="backup-btn">🗑</button>
+      </div>
+    </div>
+    <button class="btn-restore">Restore</button>
+  </div>
+</div>
+
+<!-- ====== EMPTY STATE ====== -->
+<div class="card settings-card mt-5">
+  <div class="empty-state">
+    <div class="empty-icon">📭</div>
+    <div class="empty-title">No backups yet</div>
+    <div class="empty-desc">Tap Save Backup to create your first snapshot</div>
+  </div>
+</div>
+
+<!-- ====== THEME SWITCH ====== -->
+<div class="section-header">Display</div>
+<div class="card settings-card">
+  <div style="padding:16px 18px">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);margin-bottom:10px">Theme</div>
+    <div class="theme-switch">
+      <button class="theme-option active" onclick="switchTheme('system')"><span>🖥</span> System</button>
+      <button class="theme-option" onclick="switchTheme('light')"><span>☀️</span> Light</button>
+      <button class="theme-option" onclick="switchTheme('dark')"><span>🌙</span> Dark</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<p class="footer-note">Money Tracker · v0.1.0 · Self-hosted</p>
+
+</div>
+
+<script>
+function switchTheme(t) {
+  document.documentElement.className = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : '';
+  document.querySelectorAll('.theme-option').forEach((b,i) => {
+    b.classList.toggle('active', ['system','light','dark'][i] === t);
+  });
+}
+</script>
+</body>
+</html>

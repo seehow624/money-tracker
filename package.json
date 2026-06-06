@@ -1,0 +1,45 @@
+{
+  "name": "money-tracker",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "next dev",
+    "dev:lan": "next dev -H 0.0.0.0 -p 3000",
+    "build": "next build",
+    "start": "next start",
+    "start:lan": "next start -H 0.0.0.0 -p 3000",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:seed": "tsx scripts/seed.ts",
+    "db:studio": "drizzle-kit studio",
+    "db:backfill-icons": "tsx scripts/backfill-icons.ts",
+    "typecheck": "tsc --noEmit",
+    "db:daily-backup": "tsx scripts/daily-backup.ts",
+    "db:fetch-fx": "tsx scripts/fetch-fx.ts",
+    "db:run-scheduled": "tsx scripts/run-scheduled.ts"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.9.0",
+    "drizzle-orm": "^0.45.2",
+    "lucide-react": "^1.14.0",
+    "next": "16.2.4",
+    "openai": "^6.37.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "recharts": "^3.8.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
+    "drizzle-kit": "^0.31.10",
+    "tailwindcss": "^4",
+    "tsx": "^4.21.0",
+    "typescript": "^5"
+  }
+}

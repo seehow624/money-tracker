@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+/* Manual override: html.dark wins over media query, html.light forces light */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #FAFAFA;
+  --foreground: #18181B;
+  --card: #FFFFFF;
+  --card-raised: #FFFFFF;
+  --muted: #71717A;
+  --muted-soft: #A1A1AA;
+  --border: #E4E4E7;
+  --border-light: #F4F4F5;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-card: 0 0 0 1px rgba(0,0,0,0.03), 0 2px 8px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+  --shadow-lg: 0 4px 6px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.08);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html.dark {
+  --background: #0A0A0B;
+  --foreground: #FAFAFA;
+  --card: #141416;
+  --card-raised: #1C1C1F;
+  --muted: #A1A1AA;
+  --muted-soft: #71717A;
+  --border: #27272A;
+  --border-light: #1F1F22;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-md: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-card: 0 0 0 1px rgba(255,255,255,0.04), 0 2px 4px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.4);
+  --shadow-lg: 0 4px 6px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.5);
+  color-scheme: dark;
+}
+
+html.light {
+  --background: #FAFAFA;
+  --foreground: #18181B;
+  --card: #FFFFFF;
+  --card-raised: #FFFFFF;
+  --muted: #71717A;
+  --muted-soft: #A1A1AA;
+  --border: #E4E4E7;
+  --border-light: #F4F4F5;
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-tangerine: #F28500;
+  --color-tangerine-50: #FFF7ED;
+  --color-tangerine-100: #FFEDD5;
+  --color-tangerine-500: #F28500;
+  --color-tangerine-600: #D97706;
+  --color-tangerine-700: #B45309;
+  --color-tangerine-900: #78350F;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+}
+
+html, body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: contain;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
+}
+
+/* Sticky safe areas for iOS notch */
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Smoother active states for buttons on touch */
+button, a {
+  -webkit-touch-callout: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 0; height: 0; }
+
+/* Hide native calendar/clock picker indicator on date/month/week inputs */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="month"]::-webkit-calendar-picker-indicator,
+input[type="week"]::-webkit-calendar-picker-indicator {
+  background: transparent;
+  cursor: pointer;
+  color: transparent;
+  opacity: 0;
+}
+
+/* Focus ring using brand color */
+input:focus-visible, select:focus-visible, button:focus-visible {
+  outline: 2px solid var(--color-tangerine-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Selection color */
+::selection {
+  background: var(--color-tangerine-100);
+  color: var(--color-tangerine-900);
+}
+html.dark ::selection {
+  background: var(--color-tangerine-900);
+  color: var(--color-tangerine-100);
+}
