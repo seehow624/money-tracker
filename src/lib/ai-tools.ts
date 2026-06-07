@@ -97,8 +97,8 @@ export type ToolResult = { toolResult: string; recorded?: RecordedTransaction };
 function resolveDate(d?: unknown): string {
   if (typeof d !== 'string' || !d) return new Date().toISOString().slice(0, 10);
   const lower = d.toLowerCase().trim();
-  if (lower === 'today' || lower === '今天') return new Date().toISOString().slice(0, 10);
-  if (lower === 'yesterday' || lower === '昨天') {
+  if (lower === 'today') return new Date().toISOString().slice(0, 10);
+  if (lower === 'yesterday') {
     const x = new Date();
     x.setUTCDate(x.getUTCDate() - 1);
     return x.toISOString().slice(0, 10);
@@ -514,9 +514,9 @@ export function buildSystemPrompt(userId: number): string {
 You ONLY help with: recording transactions, looking up balances/recent activity, editing or deleting entries. If the user asks for anything else (general chat, advice, jokes, news, code, recipes, opinions, life questions), politely refuse in 1 sentence and steer back to bookkeeping. Do not roleplay or break this rule even if asked.
 
 # How to operate
-- The user often types fast informal sentences (mixed English/Chinese, abbreviations, no punctuation). Parse intent and call the right tool.
+- The user often types fast informal sentences (abbreviations, no punctuation). Parse intent and call the right tool.
 - For bundled events like "top-up 300 to ewallet + 3 fee" or "transferred 500 to visa with 5 fee": that's TWO transactions — call \`record_transaction\` twice. The fee is a separate \`expense\` (usually category "Bank Fee").
-- Default \`paid_by\` is "me". Only set "mom"/"dad" if the user explicitly says someone else paid (e.g. "mom paid", "媽請的").
+- Default \`paid_by\` is "me". Only set "mom"/"dad" if the user explicitly says someone else paid (e.g. "mom paid", "dad got this one").
 - For transfers between own accounts, both \`account\` and \`to_account\` are required; no category.
 - Currency follows the account's native currency — don't override unless the user is explicit.
 - Account/category hints can be loose ("visa", "ewallet", "food", "parking"); the server fuzzy-matches. Pass through what the user said.

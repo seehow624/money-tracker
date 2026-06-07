@@ -75,7 +75,7 @@ export function AIInput() {
               submit();
             }
           }}
-          placeholder="AI 記帳：ramen 12, top up 300 to ewallet, 餘額…"
+          placeholder="AI bookkeeping: ramen 12, top up 300 to ewallet, balance…"
           disabled={busy}
           enterKeyHint="send"
           className="w-full h-11 pl-9 pr-10 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60 text-sm focus:outline-none focus:border-tangerine/50 focus:ring-2 focus:ring-tangerine/15 disabled:opacity-60 transition"

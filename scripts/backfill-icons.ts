@@ -6,8 +6,8 @@ const ICONS: Record<string, { icon: string; color: string }> = {
   // Income
   'Interest Earned':    { icon: '💵', color: 'emerald' },
   'Cash Back':          { icon: '💸', color: 'emerald' },
-  'Bonus':              { icon: '🎁', color: 'emerald' },
-  'Gift / 紅包':        { icon: '🧧', color: 'emerald' },
+  'Bonus':              { icon: '⭐', color: 'emerald' },
+  'Gift':               { icon: '🎁', color: 'emerald' },
   'Income':             { icon: '💰', color: 'emerald' },
 
   // Expense
@@ -22,7 +22,6 @@ const ICONS: Record<string, { icon: string; color: string }> = {
   'Self-development':   { icon: '📚', color: 'indigo' },
   'Travel':             { icon: '✈️', color: 'sky' },
   'Pet':                { icon: '🐾', color: 'orange' },
-  'Gift / 人情紅包':    { icon: '🧧', color: 'red' },
   'Household':          { icon: '🏠', color: 'stone' },
   'Assets':             { icon: '📷', color: 'zinc' },
   'Daily Supplies':     { icon: '🧴', color: 'lime' },

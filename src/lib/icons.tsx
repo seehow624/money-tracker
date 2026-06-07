@@ -46,7 +46,7 @@ const CATEGORY_ICONS: Record<string, LucideIcon> = {
   'Self-development': GraduationCap,
   Travel: Plane,
   Pet: PawPrint,
-  'Gift / 人情紅包': Gift,
+  Gift: Gift,
   Household: House,
   Assets: Camera,
   'Daily Supplies': SprayCan,
@@ -56,7 +56,6 @@ const CATEGORY_ICONS: Record<string, LucideIcon> = {
   'Interest Earned': Landmark,
   'Cash Back': PiggyBank,
   Bonus: TrendingUp,
-  'Gift / 紅包': Gift,
   Income: DollarSign,
 };
 

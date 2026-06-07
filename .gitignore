@@ -40,7 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# money-tracker — 個人資料不進版本
+# money-tracker — keep personal data out of version control
 /data/*.db
 /data/*.db-*
 /data/*.db.*

@@ -12,8 +12,8 @@ const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 function resolveDate(d: string | undefined): string {
   if (!d) return new Date().toISOString().slice(0, 10);
   const lower = d.toLowerCase().trim();
-  if (lower === 'today' || lower === '今天') return new Date().toISOString().slice(0, 10);
-  if (lower === 'yesterday' || lower === '昨天') {
+  if (lower === 'today') return new Date().toISOString().slice(0, 10);
+  if (lower === 'yesterday') {
     const x = new Date();
     x.setUTCDate(x.getUTCDate() - 1);
     return x.toISOString().slice(0, 10);

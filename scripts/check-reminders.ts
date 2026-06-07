@@ -74,7 +74,7 @@ function checkDailyEntry(enabled: boolean, time: string): string[] {
 
   if (count === 0) {
     markSent('daily_entry', today);
-    return [`📝 今日尚未記帳！別忘了記錄今天的支出/收入。`];
+    return [`📝 No entries logged today! Don't forget to record today's income/expenses.`];
   }
   return [];
 }
@@ -116,14 +116,14 @@ function checkBillDue(enabled: boolean, daysBefore: number): string[] {
       if (alreadySent('bill_due', dateStr, card.id)) continue;
 
       msgs.push(
-        `💳 ${card.name} 繳款日 ${dateStr}（${diffDays === 0 ? '今天' : `剩${diffDays}天`}）`,
+        `💳 ${card.name} payment due ${dateStr} (${diffDays === 0 ? 'today' : `in ${diffDays}d`})`,
       );
       markSent('bill_due', dateStr, card.id);
     }
   }
 
   if (msgs.length > 0) {
-    msgs.unshift('⚠️ 信用卡繳款提醒：');
+    msgs.unshift('⚠️ Credit card payment reminder:');
   }
   return msgs;
 }
@@ -164,8 +164,8 @@ function checkBudget(enabled: boolean, warningPct: number): string[] {
     if (alreadySent('budget_warning', today)) return [];
     markSent('budget_warning', today);
     return [
-      `🔴 預算爆了！本月已花 ${BASE_SYMBOL} ${spent.toLocaleString()}（${pct}%）`,
-      `預算 ${BASE_SYMBOL} ${budget.totalMyr.toLocaleString()} 已超支 ${BASE_SYMBOL} ${Math.abs(remaining).toLocaleString()}`,
+      `🔴 Over budget! Spent ${BASE_SYMBOL} ${spent.toLocaleString()} this month (${pct}%)`,
+      `Budget ${BASE_SYMBOL} ${budget.totalMyr.toLocaleString()}, over by ${BASE_SYMBOL} ${Math.abs(remaining).toLocaleString()}`,
     ];
   }
 
@@ -173,8 +173,8 @@ function checkBudget(enabled: boolean, warningPct: number): string[] {
     if (alreadySent('budget_warning', today)) return [];
     markSent('budget_warning', today);
     return [
-      `🟡 預算警告：本月已花 ${BASE_SYMBOL} ${spent.toLocaleString()}（${pct}%）`,
-      `剩餘 ${BASE_SYMBOL} ${remaining.toLocaleString()} / ${BASE_SYMBOL} ${budget.totalMyr.toLocaleString()}`,
+      `🟡 Budget warning: spent ${BASE_SYMBOL} ${spent.toLocaleString()} this month (${pct}%)`,
+      `${BASE_SYMBOL} ${remaining.toLocaleString()} left of ${BASE_SYMBOL} ${budget.totalMyr.toLocaleString()}`,
     ];
   }
 
