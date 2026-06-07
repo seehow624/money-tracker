@@ -11,6 +11,18 @@ Drizzle ORM · Tailwind CSS · Recharts**.
 > Personal project, shared as-is. It assumes one user and minimal UI auth — put
 > it behind your own VPN/reverse proxy. Not a multi-tenant SaaS.
 
+## Screenshots
+
+> To generate these, run `npm run db:seed-demo` (sample data) then capture the
+> pages below into `docs/screenshots/`. See
+> [`docs/screenshots/README.md`](docs/screenshots/README.md) for exact steps.
+
+| Dashboard | Stats & charts |
+| --- | --- |
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Stats](docs/screenshots/stats.png) |
+| **Balances** | **Settings** |
+| ![Balances](docs/screenshots/balances.png) | ![More](docs/screenshots/more.png) |
+
 ## Features
 
 - Multi-account, multi-currency tracking with automatic FX conversion to a
@@ -36,13 +48,17 @@ cp .env.example .env.local       # then edit the values (see below)
 
 npm run db:migrate               # create the SQLite schema
 npm run db:seed                  # seed example accounts + categories (edit scripts/seed.ts first)
+npm run db:seed-demo             # optional: sample transactions to explore with
 
 npm run dev                      # http://localhost:3000
 ```
 
 `npm run db:seed` inserts **example** accounts and categories. Open
 `scripts/seed.ts` and replace them with your own before seeding, or just add/edit
-accounts and categories in the UI afterwards.
+accounts and categories in the UI afterwards. `npm run db:seed-demo` adds a few
+months of fake transactions so the dashboard and charts aren't empty — re-run or
+just delete those rows (they have `source = 'demo'`) once you start entering real
+data.
 
 ## Configuration
 
@@ -76,6 +92,7 @@ npm run typecheck           # tsc --noEmit (the only check)
 npm run db:generate         # drizzle-kit generate after editing src/db/schema.ts
 npm run db:migrate          # apply migrations
 npm run db:seed             # seed example accounts + categories (idempotent)
+npm run db:seed-demo        # sample transactions for demos/screenshots (idempotent)
 npm run db:studio           # drizzle-kit studio
 
 npm run db:run-scheduled    # post due recurring transactions   (cron: daily)
