@@ -7,12 +7,12 @@ import {
 } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { restoreTransaction } from '@/app/transactions/actions';
-import { fmtMoney } from '@/lib/format';
+import { fmtCurrency } from '@/lib/format';
 import { Undo2, X } from 'lucide-react';
 
 const AUTO_DISMISS_MS = 6000;
 
-export function UndoToast() {
+export function UndoToast({ baseCurrency }: { baseCurrency: string }) {
   const router = useRouter();
   const pathname = usePathname() ?? '/';
   const searchParams = useSearchParams();
@@ -76,7 +76,7 @@ export function UndoToast() {
           </div>
           <div className="flex items-baseline gap-2 min-w-0">
             <span className="text-[15px] font-semibold tabular-nums leading-none shrink-0">
-              {sign}{fmtMoney(amount)}
+              {sign}{fmtCurrency(amount, baseCurrency)}
             </span>
             <span className="text-xs text-zinc-400 truncate min-w-0">
               {desc}

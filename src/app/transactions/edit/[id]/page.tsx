@@ -4,6 +4,7 @@ import { db, schema } from '@/db';
 import { eq, isNull, and, sql } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import { requireSession } from '@/lib/auth';
+import { getBaseCurrency } from '@/lib/settings';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,6 +13,7 @@ export default async function EditTransactionPage(props: {
   searchParams: Promise<{ returnTo?: string }>;
 }) {
   const { userId } = await requireSession();
+  const base = getBaseCurrency();
   const { id: idStr } = await props.params;
   const { returnTo } = await props.searchParams;
   const id = parseInt(idStr, 10);
@@ -98,6 +100,7 @@ export default async function EditTransactionPage(props: {
           categories={categories}
           customPaidByOptions={customPaidBy}
           returnTo={returnTo}
+          baseCurrency={base}
         />
       </div>
     </div>

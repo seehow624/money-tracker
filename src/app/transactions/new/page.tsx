@@ -3,6 +3,7 @@ import { TransactionForm } from '@/components/TransactionForm';
 import { db, schema } from '@/db';
 import { eq, isNull, and, sql } from 'drizzle-orm';
 import { requireSession } from '@/lib/auth';
+import { getBaseCurrency } from '@/lib/settings';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,6 +13,7 @@ export default async function NewTransactionPage({
   searchParams: Promise<{ date?: string; type?: string; accountId?: string; toAccountId?: string; amount?: string; returnTo?: string }>;
 }) {
   const { userId } = await requireSession();
+  const base = getBaseCurrency();
   const params = await searchParams;
   const accounts = db
     .select({
@@ -102,6 +104,7 @@ export default async function NewTransactionPage({
           categories={categories}
           customPaidByOptions={customPaidBy}
           returnTo={safeReturnTo}
+          baseCurrency={base}
         />
       </div>
     </div>

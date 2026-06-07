@@ -5,6 +5,7 @@ import {
   DEFAULT_ACCOUNT_TYPE_ORDER,
   type AccountType,
 } from './account-meta';
+import { DEFAULT_BASE_CURRENCY, CURRENCIES } from './currency';
 
 export type AIProfile = {
   id: number;
@@ -64,6 +65,29 @@ function writeKey(key: string, value: string | null): void {
 
 function deleteKey(key: string): void {
   db.delete(schema.appSettings).where(eq(schema.appSettings.key, key)).run();
+}
+
+// ---------------------------------------------------------------------------
+// Base currency — the single currency every balance and cross-account total is
+// shown in. Stored in app_settings; the NEXT_PUBLIC_BASE_CURRENCY env var is
+// only the initial default before anything is saved. better-sqlite3 is sync, so
+// this is a plain sync read usable from server components, actions and scripts.
+// Client components receive the resolved code as a prop instead.
+// ---------------------------------------------------------------------------
+
+const BASE_CURRENCY_KEY = 'base.currency';
+
+export function getBaseCurrency(): string {
+  return (readKey(BASE_CURRENCY_KEY) || DEFAULT_BASE_CURRENCY).toUpperCase();
+}
+
+export function setBaseCurrency(code: string): void {
+  writeKey(BASE_CURRENCY_KEY, code.trim().toUpperCase());
+}
+
+/** Currency codes offered in the picker (known metadata only). */
+export function supportedCurrencies(): string[] {
+  return Object.keys(CURRENCIES);
 }
 
 // ---------------------------------------------------------------------------

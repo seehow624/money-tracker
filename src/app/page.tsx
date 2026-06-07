@@ -2,7 +2,8 @@ import {
   monthSummary,
   monthTransactions,
 } from '@/lib/queries';
-import { fmtMoney, thisMonth, daysInMonth, dayOfMonth } from '@/lib/format';
+import { fmtCurrency, thisMonth, daysInMonth, dayOfMonth } from '@/lib/format';
+import { getBaseCurrency } from '@/lib/settings';
 import { MonthPicker } from '@/components/MonthPicker';
 import { AppBar } from '@/components/AppBar';
 import { DailyLog } from '@/components/DailyLog';
@@ -23,6 +24,7 @@ export default async function Dashboard({
   searchParams: Promise<{ month?: string; view?: string }>;
 }) {
   const { userId } = await requireSession();
+  const base = getBaseCurrency();
   const params = await searchParams;
   const month =
     params.month && MONTH_RE.test(params.month) ? params.month : thisMonth();
@@ -77,6 +79,7 @@ export default async function Dashboard({
           today={today}
           totalDays={total}
           isCurrentMonth={isCurrentMonth}
+          base={base}
         />
 
         <ViewTabs current={view} month={month} />
@@ -119,6 +122,7 @@ function HeroCard({
   today,
   totalDays,
   isCurrentMonth,
+  base,
 }: {
   summary: { spentSoFar: number; scheduled: number; budgetMyr: number; income: number; remaining: number };
   pct: number;
@@ -129,6 +133,7 @@ function HeroCard({
   today: number;
   totalDays: number;
   isCurrentMonth: boolean;
+  base: string;
 }) {
   const used = summary.spentSoFar + summary.scheduled;
   const pctDisplay = summary.budgetMyr > 0 ? Math.round((used / summary.budgetMyr) * 100) : 0;
@@ -158,13 +163,13 @@ function HeroCard({
           </div>
           <div className="flex items-baseline gap-1 mt-0.5">
             <span className="text-[34px] font-extrabold tracking-tight leading-none">
-              {fmtMoney(summary.budgetMyr)}
+              {fmtCurrency(summary.budgetMyr, base)}
             </span>
           </div>
         </div>
         <div className="text-right">
           <div className="text-[28px] font-bold tracking-tight leading-none tabular-nums">
-            {fmtMoney(summary.spentSoFar)}
+            {fmtCurrency(summary.spentSoFar, base)}
           </div>
           <div className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mt-0.5">
             spent
@@ -193,8 +198,8 @@ function HeroCard({
           </span>
           <span className="text-[11px] font-medium text-zinc-400 tabular-nums">
             {isOver
-              ? `Over by ${fmtMoney(Math.abs(remaining))}`
-              : `${fmtMoney(remaining)} left`}
+              ? `Over by ${fmtCurrency(Math.abs(remaining), base)}`
+              : `${fmtCurrency(remaining, base)} left`}
           </span>
         </div>
       </div>
@@ -205,15 +210,18 @@ function HeroCard({
           label="Income"
           value={summary.income}
           tone="income"
+          base={base}
         />
         <MiniStat
           label="Avg/day"
           value={burnRate}
+          base={base}
         />
         <MiniStat
           label="Projected"
           value={projected}
           tone={projected > summary.budgetMyr ? 'bad' : 'good'}
+          base={base}
         />
       </div>
     </div>
@@ -255,10 +263,12 @@ function MiniStat({
   label,
   value,
   tone = 'neutral',
+  base,
 }: {
   label: string;
   value: number;
   tone?: 'good' | 'bad' | 'income' | 'neutral';
+  base: string;
 }) {
   const colorCls =
     tone === 'income' ? 'text-emerald-600 dark:text-emerald-400' :
@@ -268,7 +278,7 @@ function MiniStat({
   return (
     <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-3 py-2.5 text-center">
       <div className={`text-[17px] font-bold tabular-nums leading-tight ${colorCls}`}>
-        {fmtMoney(value)}
+        {fmtCurrency(value, base)}
       </div>
       <div className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mt-0.5">
         {label}

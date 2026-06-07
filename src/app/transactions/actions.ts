@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import crypto from 'node:crypto';
 import { convertToBase } from '@/lib/fx';
-import { BASE_CURRENCY } from '@/lib/currency';
+import { getBaseCurrency } from '@/lib/settings';
 import { requireSession } from '@/lib/auth';
 import { assertOwnedAccounts, assertOwnedCategories } from '@/lib/ownership';
 
@@ -59,7 +59,7 @@ function inferCurrency(accountId: number, userId: number): string {
       ),
     )
     .get();
-  return acct?.currency ?? BASE_CURRENCY;
+  return acct?.currency ?? getBaseCurrency();
 }
 
 export async function saveTransaction(formData: FormData): Promise<void> {
@@ -312,7 +312,7 @@ export async function restoreTransaction(formData: FormData): Promise<void> {
       userId,
       date,
       amount: Number(snap.amount ?? 0),
-      currency: String(snap.currency ?? BASE_CURRENCY),
+      currency: String(snap.currency ?? getBaseCurrency()),
       amountMyr: Number(snap.amountMyr ?? 0),
       fxRate: Number(snap.fxRate ?? 1),
       type: snap.type as 'expense' | 'income' | 'transfer',

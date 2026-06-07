@@ -6,6 +6,7 @@ import { db, schema } from '@/db';
 import { eq, isNull, and } from 'drizzle-orm';
 import { SearchResults } from '@/components/SearchResults';
 import { requireSession } from '@/lib/auth';
+import { getBaseCurrency } from '@/lib/settings';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,6 +16,7 @@ export default async function SearchPage({
   searchParams: Promise<{ q?: string }>;
 }) {
   const { userId } = await requireSession();
+  const base = getBaseCurrency();
   const { q = '' } = await searchParams;
   const results = q.trim() ? searchTransactions(userId, q, 200) : [];
   const total = results.reduce(
@@ -92,6 +94,7 @@ export default async function SearchPage({
                 results={results}
                 expenseCats={expenseCats}
                 incomeCats={incomeCats}
+                baseCurrency={base}
               />
             )}
           </>

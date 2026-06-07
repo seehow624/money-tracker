@@ -3,7 +3,8 @@ import {
   cumulativeNetFlow,
   type AccountBalance,
 } from '@/lib/queries';
-import { fmtMoney, fmtNum, thisMonth, currencySymbol, BASE_CURRENCY } from '@/lib/format';
+import { fmtCurrency, fmtNum, thisMonth, currencySymbol } from '@/lib/format';
+import { getAccountTypeOrder, getBaseCurrency } from '@/lib/settings';
 import Link from 'next/link';
 import { AppBar } from '@/components/AppBar';
 import { AccountTypeIcon } from '@/lib/icons';
@@ -12,7 +13,6 @@ import { CreditCard } from 'lucide-react';
 import { EditForm } from './EditForm';
 import { ReorderForm } from './ReorderForm';
 import { ACCOUNT_TYPE_META } from '@/lib/account-meta';
-import { getAccountTypeOrder } from '@/lib/settings';
 import { requireSession } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
@@ -25,6 +25,7 @@ export default async function BalancesPage({
   searchParams: Promise<{ edit?: string; reorder?: string }>;
 }) {
   const { userId } = await requireSession();
+  const base = getBaseCurrency();
   const params = await searchParams;
   const editing = params.edit === '1';
   const reordering = params.reorder === '1';
@@ -114,6 +115,7 @@ export default async function BalancesPage({
               assetsMyr={assetsMyr}
               debtMyr={debtMyr}
               totalsByCurrency={totalsByCurrency}
+              base={base}
             />
 
             <section className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60 p-5">
@@ -121,7 +123,7 @@ export default async function BalancesPage({
                 <h2 className="text-sm font-semibold">Cash flow trend</h2>
                 <span className="text-xs text-zinc-400">last 24 months</span>
               </header>
-              <NetFlowChart data={cumulativeNetFlow(userId, thisMonth(), 24)} />
+              <NetFlowChart data={cumulativeNetFlow(userId, thisMonth(), 24)} baseCurrency={base} />
               <p className="text-xs text-zinc-400 mt-2">
                 Bars show monthly income/expense. Blue line is cumulative net
                 since 24 months ago.
@@ -139,7 +141,7 @@ export default async function BalancesPage({
                 {},
               );
               if (type === 'credit_card') {
-                return <CreditCardSection key={type} list={list} />;
+                return <CreditCardSection key={type} list={list} base={base} />;
               }
               return (
                 <section
@@ -230,7 +232,7 @@ export default async function BalancesPage({
   );
 }
 
-function CreditCardSection({ list }: { list: AccountBalance[] }) {
+function CreditCardSection({ list, base }: { list: AccountBalance[]; base: string }) {
   // Custom order from the Accounts reorder screen (display_order); no re-sort.
   const sorted = list;
 
@@ -347,7 +349,7 @@ function CreditCardSection({ list }: { list: AccountBalance[] }) {
             (totalPayable > 0 ? 'text-rose-600' : '')
           }
         >
-          {fmtMoney(totalPayable)}
+          {fmtCurrency(totalPayable, base)}
         </span>
         <span
           className={
@@ -355,7 +357,7 @@ function CreditCardSection({ list }: { list: AccountBalance[] }) {
             (totalOutstanding > 0 ? 'text-rose-500' : '')
           }
         >
-          {fmtMoney(totalOutstanding)}
+          {fmtCurrency(totalOutstanding, base)}
         </span>
       </footer>
     </section>
@@ -373,11 +375,13 @@ function NetWorthSection({
   assetsMyr,
   debtMyr,
   totalsByCurrency,
+  base,
 }: {
   netWorthMyr: number;
   assetsMyr: number;
   debtMyr: number;
   totalsByCurrency: Map<string, { assets: number; debt: number }>;
+  base: string;
 }) {
   const currencies = Array.from(totalsByCurrency.entries());
   const multiCurrency = currencies.length > 1;
@@ -387,7 +391,7 @@ function NetWorthSection({
       {/* Consolidated net worth — every account converted to the base currency via daily FX. */}
       <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-2xl p-5 shadow-md shadow-emerald-600/20">
         <div className="text-xs uppercase tracking-wide text-emerald-50/80 mb-1">
-          Net Worth{multiCurrency ? ` · all accounts in ${BASE_CURRENCY}` : ''}
+          Net Worth{multiCurrency ? ` · all accounts in ${base}` : ''}
         </div>
         <div
           className={
@@ -395,10 +399,10 @@ function NetWorthSection({
             (netWorthMyr < 0 ? 'text-rose-100' : '')
           }
         >
-          {fmtMoney(netWorthMyr)}
+          {fmtCurrency(netWorthMyr, base)}
         </div>
         <div className="text-xs text-emerald-50/80 mt-1 tabular-nums">
-          {fmtMoney(assetsMyr)} assets − {fmtMoney(debtMyr)} CC debt
+          {fmtCurrency(assetsMyr, base)} assets − {fmtCurrency(debtMyr, base)} CC debt
           {multiCurrency ? ' · FX at latest rate' : ''}
         </div>
       </div>

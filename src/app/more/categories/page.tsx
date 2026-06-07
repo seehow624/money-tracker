@@ -6,7 +6,8 @@ import { CategoryIcon } from '@/lib/icons';
 import { colorFor } from '@/lib/colors';
 import { saveCategories } from './actions';
 import { requireSession } from '@/lib/auth';
-import { BASE_SYMBOL } from '@/lib/format';
+import { currencySymbol } from '@/lib/format';
+import { getBaseCurrency } from '@/lib/settings';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,6 +23,7 @@ export default async function CategoriesPage({
   searchParams: Promise<{ type?: string }>;
 }) {
   const { userId } = await requireSession();
+  const base = getBaseCurrency();
   const params = await searchParams;
   const type: 'income' | 'expense' =
     params.type === 'income' ? 'income' : 'expense';
@@ -117,7 +119,7 @@ export default async function CategoriesPage({
                       Monthly budget
                     </label>
                     <div className="flex items-center gap-2">
-                      <span className="text-zinc-500 text-sm">{BASE_SYMBOL}</span>
+                      <span className="text-zinc-500 text-sm">{currencySymbol(base)}</span>
                       <input
                         type="number"
                         name={`budget_${c.id}`}

@@ -4,6 +4,7 @@ import { db, schema } from '@/db';
 import { and, eq, isNull } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import { requireSession } from '@/lib/auth';
+import { getBaseCurrency } from '@/lib/settings';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,6 +12,7 @@ export default async function EditScheduledRulePage(props: {
   params: Promise<{ id: string }>;
 }) {
   const { userId } = await requireSession();
+  const base = getBaseCurrency();
   const { id: idStr } = await props.params;
   const id = parseInt(idStr, 10);
   if (!Number.isFinite(id)) notFound();
@@ -84,6 +86,7 @@ export default async function EditScheduledRulePage(props: {
           }}
           accounts={accounts}
           categories={categories}
+          baseCurrency={base}
         />
       </div>
     </div>

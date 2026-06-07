@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { BASE_SYMBOL } from '@/lib/format';
+import { currencySymbol } from '@/lib/format';
 import {
   saveTransaction,
   deleteTransaction,
@@ -73,12 +73,14 @@ export function TransactionForm({
   categories,
   customPaidByOptions = [],
   returnTo,
+  baseCurrency,
 }: {
   initial: TransactionInitial;
   accounts: Account[];
   categories: Category[];
   customPaidByOptions?: string[];
   returnTo?: string;
+  baseCurrency: string;
 }) {
   const [type, setType] = useState(initial.type);
   const [paidBy, setPaidBy] = useState(initial.paidBy);
@@ -172,7 +174,7 @@ export function TransactionForm({
 
         <Field label="Amount">
           <div className="flex items-center gap-2">
-            <span className="text-zinc-500 text-sm">{BASE_SYMBOL}</span>
+            <span className="text-zinc-500 text-sm">{currencySymbol(baseCurrency)}</span>
             <input
               type="number"
               name="amount"

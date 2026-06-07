@@ -7,6 +7,7 @@ import { Fab } from "@/components/Fab";
 import { AutoRefresh } from "@/components/AutoRefresh";
 import { ThemeScript } from "@/components/ThemeScript";
 import { UndoToast } from "@/components/UndoToast";
+import { getBaseCurrency } from "@/lib/settings";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,6 +50,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const base = getBaseCurrency();
   return (
     <html
       lang="en"
@@ -65,7 +67,7 @@ export default function RootLayout({
           <Fab />
         </Suspense>
         <Suspense fallback={null}>
-          <UndoToast />
+          <UndoToast baseCurrency={base} />
         </Suspense>
         <Suspense fallback={null}>
           <BottomNav />

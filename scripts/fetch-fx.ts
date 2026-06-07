@@ -3,7 +3,9 @@ config({ path: '.env.local' });
 config(); // fall back to .env
 
 import { rawDb } from '../src/db';
-import { BASE_CURRENCY } from '../src/lib/currency';
+import { getBaseCurrency } from '../src/lib/settings';
+
+const BASE_CURRENCY = getBaseCurrency();
 
 // Fetch a daily rate for every foreign currency you actually use (any currency
 // that appears on an account and isn't the base currency), converting it INTO

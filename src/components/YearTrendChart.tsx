@@ -11,11 +11,11 @@ import {
   Legend,
   ReferenceLine,
 } from 'recharts';
-import { fmtMoney } from '@/lib/format';
+import { fmtCurrency } from '@/lib/format';
 
 type Point = { month: string; income: number; expense: number };
 
-export function YearTrendChart({ data }: { data: Point[] }) {
+export function YearTrendChart({ data, baseCurrency }: { data: Point[]; baseCurrency: string }) {
   return (
     <div className="h-72">
       <ResponsiveContainer width="100%" height="100%">
@@ -49,8 +49,8 @@ export function YearTrendChart({ data }: { data: Point[] }) {
               return (
                 <div className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md px-3 py-2 text-sm shadow-lg">
                   <div className="font-medium mb-1">{label}</div>
-                  <div className="text-emerald-600">+ {fmtMoney(inc ?? 0)}</div>
-                  <div className="text-rose-600">− {fmtMoney(exp ?? 0)}</div>
+                  <div className="text-emerald-600">+ {fmtCurrency(inc ?? 0, baseCurrency)}</div>
+                  <div className="text-rose-600">− {fmtCurrency(exp ?? 0, baseCurrency)}</div>
                   <div
                     className={
                       'text-xs mt-1 ' +
@@ -58,7 +58,7 @@ export function YearTrendChart({ data }: { data: Point[] }) {
                     }
                   >
                     net {net >= 0 ? '+' : ''}
-                    {fmtMoney(net)}
+                    {fmtCurrency(net, baseCurrency)}
                   </div>
                 </div>
               );

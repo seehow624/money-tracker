@@ -11,7 +11,7 @@ import {
   Legend,
 } from 'recharts';
 import { colorFor } from '@/lib/colors';
-import { fmtMoney } from '@/lib/format';
+import { fmtCurrency } from '@/lib/format';
 
 type Cat = { id: number; name: string; icon: string | null; color: string | null };
 type Point = { month: string } & Record<string, number | string>;
@@ -19,9 +19,11 @@ type Point = { month: string } & Record<string, number | string>;
 export function CategoryTrendChart({
   data,
   categories,
+  baseCurrency,
 }: {
   data: Point[];
   categories: Cat[];
+  baseCurrency: string;
 }) {
   if (categories.length === 0) {
     return (
@@ -71,7 +73,7 @@ export function CategoryTrendChart({
                       />
                       <span className="flex-1">{String(p.dataKey)}</span>
                       <span className="tabular-nums">
-                        {fmtMoney((p.value as number) ?? 0)}
+                        {fmtCurrency((p.value as number) ?? 0, baseCurrency)}
                       </span>
                     </div>
                   ))}

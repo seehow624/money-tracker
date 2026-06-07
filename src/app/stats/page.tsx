@@ -11,7 +11,8 @@ import {
   type Period,
   type DateRange,
 } from '@/lib/queries';
-import { fmtMoney, thisMonth } from '@/lib/format';
+import { fmtCurrency, thisMonth } from '@/lib/format';
+import { getBaseCurrency } from '@/lib/settings';
 import { colorFor } from '@/lib/colors';
 import { MonthPicker, MonthTodayButton } from '@/components/MonthPicker';
 import { MonthlyPie } from '@/components/MonthlyPie';
@@ -50,6 +51,7 @@ export default async function StatsPage({
   }>;
 }) {
   const { userId } = await requireSession();
+  const base = getBaseCurrency();
   const params = await searchParams;
   const period: Period =
     params.period === 'weekly'
@@ -179,7 +181,7 @@ export default async function StatsPage({
               <h2 className="text-sm font-semibold mb-3">
                 {range.label} · 12 months
               </h2>
-              <YearTrendChart data={annualMonthly} />
+              <YearTrendChart data={annualMonthly} baseCurrency={base} />
             </div>
           )}
 
@@ -211,7 +213,7 @@ export default async function StatsPage({
                       : 'text-zinc-700 dark:text-zinc-300')
                   }
                 >
-                  {fmtMoney(summary.income)}
+                  {fmtCurrency(summary.income, base)}
                 </div>
               </Link>
               <Link
@@ -240,7 +242,7 @@ export default async function StatsPage({
                       : 'text-zinc-700 dark:text-zinc-300')
                   }
                 >
-                  {fmtMoney(summary.spentSoFar + summary.scheduled)}
+                  {fmtCurrency(summary.spentSoFar + summary.scheduled, base)}
                 </div>
               </Link>
             </div>
@@ -256,6 +258,7 @@ export default async function StatsPage({
                   icon: c.icon,
                   color: c.color,
                 }))}
+                baseCurrency={base}
               />
             )}
 
@@ -269,6 +272,7 @@ export default async function StatsPage({
                   <CategoryTrendChart
                     data={trendData.data}
                     categories={trendData.categories}
+                    baseCurrency={base}
                   />
                 )}
                 <p className="text-xs text-zinc-400 text-center">
@@ -288,6 +292,7 @@ export default async function StatsPage({
               total={total}
               type={type}
               drillMonth={range.start.slice(0, 7)}
+              base={base}
             />
           )}
         </div>
@@ -413,11 +418,13 @@ function CategoryList({
   total,
   type,
   drillMonth,
+  base,
 }: {
   cats: CategoryRow[];
   total: number;
   type: 'expense' | 'income';
   drillMonth: string;
+  base: string;
 }) {
   const filtered = cats.filter((c) => c.spent > 0);
   if (filtered.length === 0) {
@@ -471,7 +478,7 @@ function CategoryList({
                 <div className="text-xs text-zinc-400 tabular-nums">
                   {c.txnCount} txns
                   {!c.isIncome && c.budget
-                    ? ` · budget ${fmtMoney(c.budget)}`
+                    ? ` · budget ${fmtCurrency(c.budget, base)}`
                     : ''}
                 </div>
               </div>
@@ -482,7 +489,7 @@ function CategoryList({
                 {pct.toFixed(0)}%
               </span>
               <div className="text-right">
-                <div className="tabular-nums font-medium">{fmtMoney(c.spent)}</div>
+                <div className="tabular-nums font-medium">{fmtCurrency(c.spent, base)}</div>
                 <div className="text-xs text-zinc-400 tabular-nums">
                   {pct.toFixed(1)}%
                 </div>

@@ -1,15 +1,13 @@
-// Base currency + currency formatting.
+// Currency registry + formatting.
 //
 // This is a PURE module (no server-only imports such as `db`) so it can be used
 // from client components, server components, and standalone scripts alike.
 //
-// The "base currency" is the single currency that every account balance and
-// cross-account total is converted into for display. It is configured ONCE per
-// install via the NEXT_PUBLIC_BASE_CURRENCY env var (default USD). Because each
-// transaction's converted amount is computed and stored at write time, and FX
-// rates are fetched anchored to the base currency, changing the base after you
-// already have data would require re-fetching rates and recomputing every stored
-// conversion — so treat it as install-time configuration.
+// The active "base currency" (the one every balance/total is shown in) is NOT
+// defined here — it's stored in the DB and read via `getBaseCurrency()` in
+// `settings.ts` (server/scripts). Client components receive it as a prop. Pass
+// the resolved code into `fmtCurrency`/`currencySymbol` below. The env var
+// NEXT_PUBLIC_BASE_CURRENCY is only the initial default on a fresh install.
 
 type CurrencyMeta = {
   /** Display symbol, e.g. "$", "RM", "S$". */
@@ -44,15 +42,13 @@ export const CURRENCIES: Record<string, CurrencyMeta> = {
   KRW: { symbol: '₩', locale: 'ko-KR', decimals: 0 },
 };
 
-export const BASE_CURRENCY = (
+// The env default used on a fresh install, before anything is saved in the DB.
+export const DEFAULT_BASE_CURRENCY = (
   process.env.NEXT_PUBLIC_BASE_CURRENCY || 'USD'
 ).toUpperCase();
 
-export const BASE_LOCALE =
-  CURRENCIES[BASE_CURRENCY]?.locale ?? 'en-US';
-
-export const BASE_SYMBOL =
-  CURRENCIES[BASE_CURRENCY]?.symbol ?? BASE_CURRENCY;
+/** All currency codes we have metadata for, for building a picker. */
+export const CURRENCY_CODES = Object.keys(CURRENCIES);
 
 export function currencyMeta(code: string): CurrencyMeta {
   return (
@@ -76,9 +72,4 @@ export function fmtCurrency(n: number, code: string): string {
     minimumFractionDigits: d,
     maximumFractionDigits: d,
   })}`;
-}
-
-/** Format an amount that is already in the base currency. */
-export function fmtMoney(n: number): string {
-  return fmtCurrency(n, BASE_CURRENCY);
 }

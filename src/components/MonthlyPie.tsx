@@ -1,7 +1,7 @@
 'use client';
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { fmtMoney } from '@/lib/format';
+import { fmtCurrency } from '@/lib/format';
 import { paletteFor } from '@/lib/palette';
 
 type Slice = {
@@ -14,7 +14,7 @@ type Slice = {
 
 const RADIAN = Math.PI / 180;
 
-export function MonthlyPie({ data }: { data: Slice[] }) {
+export function MonthlyPie({ data, baseCurrency }: { data: Slice[]; baseCurrency: string }) {
   const filtered = data.filter((d) => d.spent > 0).sort((a, b) => b.spent - a.spent);
   const total = filtered.reduce((s, c) => s + c.spent, 0);
 
@@ -126,7 +126,7 @@ export function MonthlyPie({ data }: { data: Slice[] }) {
                     {p.icon} {p.name}
                   </div>
                   <div className="text-zinc-500 text-xs tabular-nums">
-                    {fmtMoney(p.spent)} · {pct.toFixed(1)}%
+                    {fmtCurrency(p.spent, baseCurrency)} · {pct.toFixed(1)}%
                   </div>
                 </div>
               );

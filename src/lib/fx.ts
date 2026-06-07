@@ -1,17 +1,20 @@
 import { rawDb } from '@/db';
-import { BASE_CURRENCY } from './currency';
+import { getBaseCurrency } from './settings';
 
 /**
  * Look up the FX rate to convert `amount` from `currency` to the base currency
  * on the given date. Falls back to the most recent rate before that date if the
  * exact date is missing (e.g. weekends, holidays — Frankfurter only publishes
  * weekday rates). Returns 1 for the base currency or an unknown currency.
+ *
+ * Pass `base` explicitly in hot loops (e.g. recompute) to avoid re-reading it.
  */
 export function fxToBase(
   currency: string,
   date: string,
+  base: string = getBaseCurrency(),
 ): { rate: number; rateDate: string | null } {
-  if (currency.toUpperCase() === BASE_CURRENCY) return { rate: 1, rateDate: date };
+  if (currency.toUpperCase() === base) return { rate: 1, rateDate: date };
 
   const r = rawDb
     .prepare(
@@ -20,7 +23,7 @@ export function fxToBase(
        ORDER BY date DESC
        LIMIT 1`,
     )
-    .get(currency, BASE_CURRENCY, date) as
+    .get(currency, base, date) as
     | { date: string; rate: number }
     | undefined;
 
@@ -34,7 +37,7 @@ export function fxToBase(
        ORDER BY date ASC
        LIMIT 1`,
     )
-    .get(currency, BASE_CURRENCY) as { date: string; rate: number } | undefined;
+    .get(currency, base) as { date: string; rate: number } | undefined;
 
   if (fallback) return { rate: fallback.rate, rateDate: fallback.date };
 
@@ -51,7 +54,8 @@ export function convertToBase(
   amount: number,
   currency: string,
   date: string,
+  base: string = getBaseCurrency(),
 ): { amountBase: number; fxRate: number } {
-  const { rate } = fxToBase(currency, date);
+  const { rate } = fxToBase(currency, date, base);
   return { amountBase: amount * rate, fxRate: rate };
 }

@@ -1,11 +1,16 @@
-// Currency helpers live in ./currency (pure, base-currency aware). Re-exported
-// here so existing `@/lib/format` imports keep working.
-export { fmtMoney, fmtCurrency, currencySymbol, BASE_CURRENCY, BASE_SYMBOL } from './currency';
-
-import { BASE_LOCALE } from './currency';
+// Currency helpers live in ./currency (pure). Re-exported here so existing
+// `@/lib/format` imports keep working. The active base currency is resolved at
+// runtime via getBaseCurrency() (server) and passed into these as `code`.
+export {
+  fmtCurrency,
+  currencySymbol,
+  currencyMeta,
+  CURRENCY_CODES,
+  DEFAULT_BASE_CURRENCY,
+} from './currency';
 
 export function fmtNum(n: number, digits = 2): string {
-  return n.toLocaleString(BASE_LOCALE, {
+  return n.toLocaleString('en-US', {
     minimumFractionDigits: digits,
     maximumFractionDigits: digits,
   });

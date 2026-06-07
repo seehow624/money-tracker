@@ -4,7 +4,8 @@ import { MonthPicker, MonthTodayButton } from '@/components/MonthPicker';
 import { SwipeMonth } from '@/components/SwipeMonth';
 import { db, schema } from '@/db';
 import { monthTransactions, monthlyTotals } from '@/lib/queries';
-import { thisMonth, fmtMoney } from '@/lib/format';
+import { thisMonth, fmtCurrency } from '@/lib/format';
+import { getBaseCurrency } from '@/lib/settings';
 import { sql, eq, and } from 'drizzle-orm';
 import { Heart } from 'lucide-react';
 import { YearTrendChart } from '@/components/YearTrendChart';
@@ -20,6 +21,7 @@ export default async function PaidByPage(props: {
   searchParams: Promise<{ month?: string }>;
 }) {
   const { userId } = await requireSession();
+  const base = getBaseCurrency();
   const { who: whoRaw } = await props.params;
   const { month: monthParam } = await props.searchParams;
   const who = decodeURIComponent(whoRaw).toLowerCase();
@@ -139,7 +141,7 @@ export default async function PaidByPage(props: {
               </span>
             </div>
             <div className="text-3xl font-bold tabular-nums">
-              {fmtMoney(lifetime?.total ?? 0)}
+              {fmtCurrency(lifetime?.total ?? 0, base)}
             </div>
             <div className="text-sm opacity-80 mt-1">
               {lifetime?.n ?? 0} transactions · since{' '}
@@ -165,7 +167,7 @@ export default async function PaidByPage(props: {
                         {c.n} txns
                       </span>
                       <span className="font-medium tabular-nums w-24 text-right">
-                        {fmtMoney(c.total)}
+                        {fmtCurrency(c.total, base)}
                       </span>
                       <span className="text-xs text-zinc-500 w-12 text-right tabular-nums">
                         {pct.toFixed(0)}%
@@ -182,7 +184,7 @@ export default async function PaidByPage(props: {
             <h2 className="text-sm font-semibold mb-3">
               Monthly spend · 12 months ending {month}
             </h2>
-            <YearTrendChart data={trendData} />
+            <YearTrendChart data={trendData} baseCurrency={base} />
           </div>
 
           {/* This month log */}

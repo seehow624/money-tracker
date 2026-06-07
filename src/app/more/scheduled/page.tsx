@@ -1,6 +1,7 @@
 import { AppBar } from '@/components/AppBar';
 import { db, schema } from '@/db';
-import { fmtMoney, currencySymbol } from '@/lib/format';
+import { fmtCurrency, currencySymbol } from '@/lib/format';
+import { getBaseCurrency } from '@/lib/settings';
 import { eq, and } from 'drizzle-orm';
 import Link from 'next/link';
 import { Calendar, Plus, ArrowUpCircle, ArrowDownCircle, ArrowLeftRight } from 'lucide-react';
@@ -22,6 +23,7 @@ function ord(n: number): string {
 
 export default async function ScheduledRulesPage() {
   const { userId } = await requireSession();
+  const base = getBaseCurrency();
   const rules = db
     .select({
       id: schema.scheduledRules.id,

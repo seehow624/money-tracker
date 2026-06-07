@@ -1,6 +1,7 @@
 import { AppBar } from '@/components/AppBar';
 import { db, schema } from '@/db';
-import { fmtMoney, fmtNum, thisMonth, daysInMonth, BASE_SYMBOL } from '@/lib/format';
+import { fmtCurrency, currencySymbol, fmtNum, thisMonth, daysInMonth } from '@/lib/format';
+import { getBaseCurrency } from '@/lib/settings';
 import { sql, eq } from 'drizzle-orm';
 import Link from 'next/link';
 import { saveBudget } from './actions';
@@ -13,6 +14,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function BudgetPage() {
   const { userId } = await requireSession();
+  const base = getBaseCurrency();
   const month = thisMonth();
   const allBudgets = db
     .select()
@@ -42,7 +44,7 @@ export default async function BudgetPage() {
                 Monthly Total
               </label>
               <div className="flex items-center gap-2">
-                <span className="text-zinc-500 text-sm">{BASE_SYMBOL}</span>
+                <span className="text-zinc-500 text-sm">{currencySymbol(base)}</span>
                 <input
                   type="number"
                   name="total"
@@ -132,11 +134,11 @@ export default async function BudgetPage() {
               />
             </div>
             <div className="text-xs text-zinc-500 tabular-nums">
-              {fmtMoney(usedTotal)} of {fmtMoney(current.totalMyr)}
+              {fmtCurrency(usedTotal, base)} of {fmtCurrency(current.totalMyr, base)}
               {summary.scheduled > 0 && (
                 <span className="text-amber-600">
                   {' · incl. '}
-                  {fmtMoney(summary.scheduled)} scheduled
+                  {fmtCurrency(summary.scheduled, base)} scheduled
                 </span>
               )}
             </div>
@@ -236,7 +238,7 @@ export default async function BudgetPage() {
                   }
                 >
                   <span className="font-medium tabular-nums">{b.month}</span>
-                  <span className="tabular-nums">{fmtMoney(b.totalMyr)}</span>
+                  <span className="tabular-nums">{fmtCurrency(b.totalMyr, base)}</span>
                 </li>
               ))}
             </ul>

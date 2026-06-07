@@ -1,6 +1,8 @@
 import { AppBar } from '@/components/AppBar';
 import { db, schema } from '@/db';
-import { BASE_CURRENCY, BASE_SYMBOL, fmtMoney } from '@/lib/currency';
+import { fmtCurrency, currencySymbol, CURRENCY_CODES } from '@/lib/currency';
+import { getBaseCurrency } from '@/lib/settings';
+import { BaseCurrencySelect } from '@/components/BaseCurrencySelect';
 import { sql, eq, and, isNull } from 'drizzle-orm';
 import Link from 'next/link';
 import {
@@ -9,7 +11,6 @@ import {
   Wallet,
   Target,
   Database,
-  DollarSign,
   Coins,
   Bell,
   Network,
@@ -37,6 +38,7 @@ const BUILD_TIME = process.env.NEXT_PUBLIC_BUILD_TIME ?? '';
 export default async function MorePage() {
   const session = await requireSession();
   const isAdmin = session.role === 'admin';
+  const base = getBaseCurrency();
 
   const txnCount =
     db
@@ -151,7 +153,7 @@ export default async function MorePage() {
                 key={p.who}
                 Icon={Heart}
                 title={p.who.charAt(0).toUpperCase() + p.who.slice(1)}
-                subtitle={`${p.n} transactions · ${fmtMoney(p.total ?? 0)}`}
+                subtitle={`${p.n} transactions · ${fmtCurrency(p.total ?? 0, base)}`}
                 href={`/paid-by/${p.who}`}
               />
             ))}
@@ -182,7 +184,7 @@ export default async function MorePage() {
             title="Budget"
             subtitle={
               budget
-                ? `${fmtMoney(budget.totalMyr)} for ${month}`
+                ? `${fmtCurrency(budget.totalMyr, base)} for ${month}`
                 : 'Not set for this month'
             }
             href="/more/budget"
@@ -196,12 +198,13 @@ export default async function MorePage() {
             </div>
             <ThemeToggle />
           </div>
-          <Row
-            Icon={DollarSign}
-            title="Main Currency"
-            subtitle={`${BASE_CURRENCY} (${BASE_SYMBOL}) · set via NEXT_PUBLIC_BASE_CURRENCY`}
-            href="#"
-            staticInfo
+          <BaseCurrencySelect
+            current={base}
+            hasData={txnCount > 0}
+            options={CURRENCY_CODES.map((code) => ({
+              code,
+              symbol: currencySymbol(code),
+            }))}
           />
           <Row
             Icon={Coins}

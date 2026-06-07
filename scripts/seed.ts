@@ -4,7 +4,12 @@ config(); // fall back to .env
 
 import { db, schema, rawDb } from '../src/db';
 import { eq, and, isNull } from 'drizzle-orm';
-import { BASE_CURRENCY } from '../src/lib/currency';
+import { getBaseCurrency, setBaseCurrency } from '../src/lib/settings';
+
+// Resolve the base currency (DB value, or NEXT_PUBLIC_BASE_CURRENCY, or USD) and
+// persist it so the app/UI agree with what we seed accounts in.
+const BASE_CURRENCY = getBaseCurrency();
+setBaseCurrency(BASE_CURRENCY);
 
 type AccountSeed = {
   name: string;

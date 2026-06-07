@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { BASE_SYMBOL } from '@/lib/format';
+import { currencySymbol } from '@/lib/format';
 import {
   saveScheduledRule,
   deleteScheduledRule,
@@ -50,10 +50,12 @@ export function ScheduledRuleForm({
   initial,
   accounts,
   categories,
+  baseCurrency,
 }: {
   initial: Initial;
   accounts: Account[];
   categories: Category[];
+  baseCurrency: string;
 }) {
   const [type, setType] = useState(initial.type);
   const [endless, setEndless] = useState(initial.endDate === '');
@@ -110,7 +112,7 @@ export function ScheduledRuleForm({
 
         <Field label="Amount">
           <div className="flex items-center gap-2">
-            <span className="text-zinc-500 text-sm">{BASE_SYMBOL}</span>
+            <span className="text-zinc-500 text-sm">{currencySymbol(baseCurrency)}</span>
             <input
               type="number"
               name="amount"

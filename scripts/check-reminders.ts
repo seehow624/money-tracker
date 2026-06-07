@@ -4,7 +4,10 @@ config(); // fall back to .env
 
 import { db, schema } from '../src/db';
 import { eq, and, gte, sql } from 'drizzle-orm';
-import { BASE_SYMBOL } from '../src/lib/currency';
+import { currencySymbol } from '../src/lib/currency';
+import { getBaseCurrency } from '../src/lib/settings';
+
+const BASE_SYMBOL = currencySymbol(getBaseCurrency());
 
 function getSettings() {
   const row = db

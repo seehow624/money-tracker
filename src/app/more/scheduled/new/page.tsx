@@ -3,11 +3,13 @@ import { ScheduledRuleForm } from '@/components/ScheduledRuleForm';
 import { db, schema } from '@/db';
 import { and, eq, isNull } from 'drizzle-orm';
 import { requireSession } from '@/lib/auth';
+import { getBaseCurrency } from '@/lib/settings';
 
 export const dynamic = 'force-dynamic';
 
 export default async function NewScheduledRulePage() {
   const { userId } = await requireSession();
+  const base = getBaseCurrency();
   const accounts = db
     .select({
       id: schema.accounts.id,
@@ -67,6 +69,7 @@ export default async function NewScheduledRulePage() {
           }}
           accounts={accounts}
           categories={categories}
+          baseCurrency={base}
         />
       </div>
     </div>

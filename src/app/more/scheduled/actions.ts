@@ -5,7 +5,7 @@ import { and, eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { requireSession } from '@/lib/auth';
-import { BASE_CURRENCY } from '@/lib/currency';
+import { getBaseCurrency } from '@/lib/settings';
 import { assertOwnedAccounts, assertOwnedCategories } from '@/lib/ownership';
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -91,7 +91,7 @@ export async function saveScheduledRule(formData: FormData): Promise<void> {
           eq(schema.accounts.userId, userId),
         ),
       )
-      .get()?.c ?? BASE_CURRENCY;
+      .get()?.c ?? getBaseCurrency();
 
   const values = {
     name,

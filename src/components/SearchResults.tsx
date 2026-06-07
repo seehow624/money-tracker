@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import Link from 'next/link';
-import { fmtMoney } from '@/lib/format';
+import { fmtCurrency } from '@/lib/format';
 import { colorFor } from '@/lib/colors';
 import { CategoryIcon, TransferIcon } from '@/lib/icons';
 import { CheckSquare, Square, Trash2, Heart, Tag, X } from 'lucide-react';
@@ -15,10 +15,12 @@ export function SearchResults({
   results,
   expenseCats,
   incomeCats,
+  baseCurrency,
 }: {
   results: RecentTxn[];
   expenseCats: Cat[];
   incomeCats: Cat[];
+  baseCurrency: string;
 }) {
   const [selectMode, setSelectMode] = useState(false);
   const [selected, setSelected] = useState<Set<number>>(new Set());
@@ -170,7 +172,7 @@ export function SearchResults({
                 }
               >
                 {t.type === 'income' ? '+' : t.type === 'expense' ? '−' : ''}
-                {fmtMoney(t.amountMyr)}
+                {fmtCurrency(t.amountMyr, baseCurrency)}
               </span>
             </div>
           );

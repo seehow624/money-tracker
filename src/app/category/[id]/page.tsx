@@ -4,7 +4,8 @@ import { MonthPicker, MonthTodayButton } from '@/components/MonthPicker';
 import { SwipeMonth } from '@/components/SwipeMonth';
 import { db, schema } from '@/db';
 import { monthTransactions } from '@/lib/queries';
-import { thisMonth, fmtMoney } from '@/lib/format';
+import { thisMonth, fmtCurrency } from '@/lib/format';
+import { getBaseCurrency } from '@/lib/settings';
 import { CategoryIcon } from '@/lib/icons';
 import { colorFor } from '@/lib/colors';
 import { requireSession } from '@/lib/auth';
@@ -27,6 +28,7 @@ export default async function CategoryPage(props: {
   searchParams: Promise<{ month?: string; from?: string }>;
 }) {
   const { userId } = await requireSession();
+  const base = getBaseCurrency();
   const { id: idStr } = await props.params;
   const { month: monthParam, from } = await props.searchParams;
   const id = parseInt(idStr, 10);
@@ -93,14 +95,14 @@ export default async function CategoryPage(props: {
                   {cat.isIncome ? 'Earned' : 'Spent'}
                 </div>
                 <div className="text-2xl font-bold tabular-nums">
-                  {fmtMoney(total)}
+                  {fmtCurrency(total, base)}
                 </div>
               </div>
               <div className="text-right">
                 <div className="text-xs text-zinc-500">{log.totalCount} txns</div>
                 {budget > 0 && (
                   <div className="text-xs text-zinc-500 tabular-nums">
-                    of {fmtMoney(budget)}
+                    of {fmtCurrency(budget, base)}
                   </div>
                 )}
               </div>
