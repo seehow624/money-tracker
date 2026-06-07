@@ -9,7 +9,7 @@ import {
   Legend,
 } from 'recharts';
 import { colorFor } from '@/lib/colors';
-import { fmtMyr } from '@/lib/format';
+import { fmtMoney } from '@/lib/format';
 
 type Slice = {
   id: number;
@@ -73,7 +73,7 @@ export function CategoryDonut({ data }: { data: Slice[] }) {
                 <div className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md px-3 py-2 text-sm shadow-lg">
                   <div className="font-medium">{p.name}</div>
                   <div className="text-zinc-500 text-xs tabular-nums">
-                    {fmtMyr(p.spent)} · {pct.toFixed(1)}%
+                    {fmtMoney(p.spent)} · {pct.toFixed(1)}%
                   </div>
                 </div>
               );

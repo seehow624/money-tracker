@@ -5,7 +5,8 @@ import { eq, sql, and, isNotNull, desc } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import crypto from 'node:crypto';
-import { convertToMyr } from '@/lib/fx';
+import { convertToBase } from '@/lib/fx';
+import { BASE_CURRENCY } from '@/lib/currency';
 import { requireSession } from '@/lib/auth';
 import { assertOwnedAccounts, assertOwnedCategories } from '@/lib/ownership';
 
@@ -58,7 +59,7 @@ function inferCurrency(accountId: number, userId: number): string {
       ),
     )
     .get();
-  return acct?.currency ?? 'MYR';
+  return acct?.currency ?? BASE_CURRENCY;
 }
 
 export async function saveTransaction(formData: FormData): Promise<void> {
@@ -93,7 +94,7 @@ export async function saveTransaction(formData: FormData): Promise<void> {
   }
 
   const currency = inferCurrency(accountId, userId);
-  const { amountMyr, fxRate } = convertToMyr(amount, currency, date);
+  const { amountBase: amountMyr, fxRate } = convertToBase(amount, currency, date);
 
   const baseValues = {
     date,
@@ -311,7 +312,7 @@ export async function restoreTransaction(formData: FormData): Promise<void> {
       userId,
       date,
       amount: Number(snap.amount ?? 0),
-      currency: String(snap.currency ?? 'MYR'),
+      currency: String(snap.currency ?? BASE_CURRENCY),
       amountMyr: Number(snap.amountMyr ?? 0),
       fxRate: Number(snap.fxRate ?? 1),
       type: snap.type as 'expense' | 'income' | 'transfer',

@@ -1,6 +1,6 @@
 import { AppBar } from '@/components/AppBar';
 import { db, schema } from '@/db';
-import { fmtMyr, fmtNum, thisMonth, daysInMonth } from '@/lib/format';
+import { fmtMoney, fmtNum, thisMonth, daysInMonth, BASE_SYMBOL } from '@/lib/format';
 import { sql, eq } from 'drizzle-orm';
 import Link from 'next/link';
 import { saveBudget } from './actions';
@@ -42,7 +42,7 @@ export default async function BudgetPage() {
                 Monthly Total
               </label>
               <div className="flex items-center gap-2">
-                <span className="text-zinc-500 text-sm">RM</span>
+                <span className="text-zinc-500 text-sm">{BASE_SYMBOL}</span>
                 <input
                   type="number"
                   name="total"
@@ -132,11 +132,11 @@ export default async function BudgetPage() {
               />
             </div>
             <div className="text-xs text-zinc-500 tabular-nums">
-              {fmtMyr(usedTotal)} of {fmtMyr(current.totalMyr)}
+              {fmtMoney(usedTotal)} of {fmtMoney(current.totalMyr)}
               {summary.scheduled > 0 && (
                 <span className="text-amber-600">
                   {' · incl. '}
-                  {fmtMyr(summary.scheduled)} scheduled
+                  {fmtMoney(summary.scheduled)} scheduled
                 </span>
               )}
             </div>
@@ -236,7 +236,7 @@ export default async function BudgetPage() {
                   }
                 >
                   <span className="font-medium tabular-nums">{b.month}</span>
-                  <span className="tabular-nums">{fmtMyr(b.totalMyr)}</span>
+                  <span className="tabular-nums">{fmtMoney(b.totalMyr)}</span>
                 </li>
               ))}
             </ul>

@@ -11,7 +11,7 @@ import {
   Legend,
 } from 'recharts';
 import { colorFor } from '@/lib/colors';
-import { fmtMyr } from '@/lib/format';
+import { fmtMoney } from '@/lib/format';
 
 type Cat = { id: number; name: string; icon: string | null; color: string | null };
 type Point = { month: string } & Record<string, number | string>;
@@ -71,7 +71,7 @@ export function CategoryTrendChart({
                       />
                       <span className="flex-1">{String(p.dataKey)}</span>
                       <span className="tabular-nums">
-                        {fmtMyr((p.value as number) ?? 0)}
+                        {fmtMoney((p.value as number) ?? 0)}
                       </span>
                     </div>
                   ))}

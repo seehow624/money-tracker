@@ -1,6 +1,10 @@
-import 'dotenv/config';
+import { config } from 'dotenv';
+config({ path: '.env.local' });
+config(); // fall back to .env
+
 import { db, schema, rawDb } from '../src/db';
 import { eq, and, isNull } from 'drizzle-orm';
+import { BASE_CURRENCY } from '../src/lib/currency';
 
 type AccountSeed = {
   name: string;
@@ -10,23 +14,27 @@ type AccountSeed = {
   notes?: string;
 };
 
+// A different currency to the base, just to demonstrate multi-currency support
+// (the dashboard converts it to the base currency via FX rates).
+const FOREIGN = BASE_CURRENCY === 'USD' ? 'EUR' : 'USD';
+
 // Example accounts — edit this list to match your own banks, cards and wallets.
-// `type` is one of: bank | credit_card | ewallet | cash. `currency` is any ISO code.
+// `type` is one of: bank | credit_card | ewallet | cash. `currency` is any ISO code;
+// here everything defaults to your base currency except one foreign demo account.
 const ACCOUNTS: AccountSeed[] = [
   // Banks
-  { name: 'Main Checking', type: 'bank', currency: 'MYR', notes: 'Primary salary account' },
-  { name: 'Savings', type: 'bank', currency: 'MYR' },
-  { name: 'Foreign Account', type: 'bank', currency: 'SGD' },
+  { name: 'Bank', type: 'bank', currency: BASE_CURRENCY, notes: 'Primary account' },
+  { name: 'Savings', type: 'bank', currency: BASE_CURRENCY },
+  { name: 'Foreign Account', type: 'bank', currency: FOREIGN },
 
   // Credit cards
-  { name: 'Visa Card', type: 'credit_card', currency: 'MYR' },
-  { name: 'Mastercard', type: 'credit_card', currency: 'MYR' },
+  { name: 'Credit Card', type: 'credit_card', currency: BASE_CURRENCY },
 
   // E-wallets
-  { name: 'E-Wallet', type: 'ewallet', currency: 'MYR' },
+  { name: 'E-Wallet', type: 'ewallet', currency: BASE_CURRENCY },
 
   // Cash
-  { name: 'Cash', type: 'cash', currency: 'MYR' },
+  { name: 'Cash', type: 'cash', currency: BASE_CURRENCY },
 ];
 
 type SubCat = string;
@@ -203,7 +211,7 @@ async function seed() {
         .values({ month: currentMonth, totalMyr: MONTHLY_BUDGET_TOTAL })
         .run();
       console.log(
-        `  [budget] +${currentMonth} RM ${MONTHLY_BUDGET_TOTAL}`,
+        `  [budget] +${currentMonth} ${BASE_CURRENCY} ${MONTHLY_BUDGET_TOTAL}`,
       );
     }
 

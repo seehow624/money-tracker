@@ -1,6 +1,6 @@
 import { AppBar } from '@/components/AppBar';
 import { db, schema } from '@/db';
-import { fmtMyr } from '@/lib/format';
+import { fmtMoney, currencySymbol } from '@/lib/format';
 import { eq, and } from 'drizzle-orm';
 import Link from 'next/link';
 import { Calendar, Plus, ArrowUpCircle, ArrowDownCircle, ArrowLeftRight } from 'lucide-react';
@@ -120,7 +120,7 @@ export default async function ScheduledRulesPage() {
                       </div>
                       <div className="text-right shrink-0">
                         <div className={'font-semibold tabular-nums ' + meta.color}>
-                          {sign}{r.currency === 'MYR' ? 'RM' : r.currency} {r.amount.toFixed(2)}
+                          {sign}{currencySymbol(r.currency)} {r.amount.toFixed(2)}
                         </div>
                         {r.active && (
                           <div className="text-[11px] text-zinc-400 tabular-nums">

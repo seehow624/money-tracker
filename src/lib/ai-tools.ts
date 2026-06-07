@@ -1,7 +1,7 @@
 import { db, rawDb, schema } from '@/db';
 import { and, eq, desc, sql } from 'drizzle-orm';
 import { resolveAccount, resolveCategory } from './fuzzy';
-import { convertToMyr } from './fx';
+import { convertToBase } from './fx';
 import { accountBalances } from './queries';
 import { assertOwnedAccounts, assertOwnedCategories } from './ownership';
 import { revalidatePath } from 'next/cache';
@@ -238,7 +238,7 @@ function executeRecord(userId: number, input: Record<string, unknown>): ToolResu
   const description = (input.description ? String(input.description) : '').trim();
   const paidBy = (input.paid_by ? String(input.paid_by) : 'me').trim() || 'me';
   const currency = account.currency;
-  const { amountMyr, fxRate } = convertToMyr(amount, currency, date);
+  const { amountBase: amountMyr, fxRate } = convertToBase(amount, currency, date);
   const fingerprint = `ai:${Date.now()}:${crypto.randomBytes(6).toString('hex')}`;
 
   // Defense-in-depth: confirm resolved ids really belong to this user

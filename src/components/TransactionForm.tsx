@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import { BASE_SYMBOL } from '@/lib/format';
 import {
   saveTransaction,
   deleteTransaction,
@@ -171,7 +172,7 @@ export function TransactionForm({
 
         <Field label="Amount">
           <div className="flex items-center gap-2">
-            <span className="text-zinc-500 text-sm">RM</span>
+            <span className="text-zinc-500 text-sm">{BASE_SYMBOL}</span>
             <input
               type="number"
               name="amount"

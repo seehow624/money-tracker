@@ -4,7 +4,7 @@ import { MonthPicker, MonthTodayButton } from '@/components/MonthPicker';
 import { SwipeMonth } from '@/components/SwipeMonth';
 import { db, schema } from '@/db';
 import { monthTransactions, monthlyTotals } from '@/lib/queries';
-import { thisMonth, fmtMyr } from '@/lib/format';
+import { thisMonth, fmtMoney } from '@/lib/format';
 import { sql, eq, and } from 'drizzle-orm';
 import { Heart } from 'lucide-react';
 import { YearTrendChart } from '@/components/YearTrendChart';
@@ -139,7 +139,7 @@ export default async function PaidByPage(props: {
               </span>
             </div>
             <div className="text-3xl font-bold tabular-nums">
-              {fmtMyr(lifetime?.total ?? 0)}
+              {fmtMoney(lifetime?.total ?? 0)}
             </div>
             <div className="text-sm opacity-80 mt-1">
               {lifetime?.n ?? 0} transactions · since{' '}
@@ -165,7 +165,7 @@ export default async function PaidByPage(props: {
                         {c.n} txns
                       </span>
                       <span className="font-medium tabular-nums w-24 text-right">
-                        {fmtMyr(c.total)}
+                        {fmtMoney(c.total)}
                       </span>
                       <span className="text-xs text-zinc-500 w-12 text-right tabular-nums">
                         {pct.toFixed(0)}%

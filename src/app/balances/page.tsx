@@ -3,7 +3,7 @@ import {
   cumulativeNetFlow,
   type AccountBalance,
 } from '@/lib/queries';
-import { fmtMyr, fmtNum, thisMonth } from '@/lib/format';
+import { fmtMoney, fmtNum, thisMonth, currencySymbol, BASE_CURRENCY } from '@/lib/format';
 import Link from 'next/link';
 import { AppBar } from '@/components/AppBar';
 import { AccountTypeIcon } from '@/lib/icons';
@@ -45,7 +45,7 @@ export default async function BalancesPage({
   }
 
   // Per-currency subtotals (native amounts) for the breakdown, plus a single
-  // consolidated net worth in MYR using the daily FX rates (currentMyr).
+  // consolidated net worth in the base currency using the daily FX rates (currentMyr).
   const totalsByCurrency = new Map<string, { assets: number; debt: number }>();
   let assetsMyr = 0;
   let debtMyr = 0;
@@ -169,7 +169,7 @@ export default async function BalancesPage({
                     <div className="text-sm font-medium tabular-nums">
                       {Object.entries(subtotal).map(([cur, v]) => (
                         <span key={cur} className="ml-3">
-                          {cur === 'MYR' ? 'RM' : cur} {fmtNum(v)}
+                          {currencySymbol(cur)} {fmtNum(v)}
                         </span>
                       ))}
                     </div>
@@ -202,7 +202,7 @@ export default async function BalancesPage({
                                 (a.current < 0 ? 'text-rose-600' : '')
                               }
                             >
-                              {a.currency === 'MYR' ? 'RM' : a.currency}{' '}
+                              {currencySymbol(a.currency)}{' '}
                               {fmtNum(a.current)}
                             </div>
                             <div className="text-xs text-zinc-400 tabular-nums">
@@ -310,7 +310,7 @@ function CreditCardSection({ list }: { list: AccountBalance[] }) {
                     (c.balancePayable > 0 ? 'text-rose-600' : 'text-zinc-400')
                   }
                 >
-                  RM {fmtNum(c.balancePayable)}
+                  {currencySymbol(a.currency)} {fmtNum(c.balancePayable)}
                 </div>
                 <div className="text-xs text-zinc-400 tabular-nums">
                   netΔ {fmtNum(a.netDelta)}
@@ -327,7 +327,7 @@ function CreditCardSection({ list }: { list: AccountBalance[] }) {
                         : 'text-zinc-400')
                   }
                 >
-                  RM {fmtNum(c.outstanding)}
+                  {currencySymbol(a.currency)} {fmtNum(c.outstanding)}
                 </div>
                 <div className="text-xs text-zinc-400 tabular-nums">
                   next stmt {c.nextStmtDate.slice(5)}
@@ -347,7 +347,7 @@ function CreditCardSection({ list }: { list: AccountBalance[] }) {
             (totalPayable > 0 ? 'text-rose-600' : '')
           }
         >
-          RM {fmtNum(totalPayable)}
+          {fmtMoney(totalPayable)}
         </span>
         <span
           className={
@@ -355,7 +355,7 @@ function CreditCardSection({ list }: { list: AccountBalance[] }) {
             (totalOutstanding > 0 ? 'text-rose-500' : '')
           }
         >
-          RM {fmtNum(totalOutstanding)}
+          {fmtMoney(totalOutstanding)}
         </span>
       </footer>
     </section>
@@ -384,10 +384,10 @@ function NetWorthSection({
 
   return (
     <section className="space-y-3">
-      {/* Consolidated net worth — every account converted to MYR via daily FX. */}
+      {/* Consolidated net worth — every account converted to the base currency via daily FX. */}
       <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-2xl p-5 shadow-md shadow-emerald-600/20">
         <div className="text-xs uppercase tracking-wide text-emerald-50/80 mb-1">
-          Net Worth{multiCurrency ? ' · all accounts in RM' : ''}
+          Net Worth{multiCurrency ? ` · all accounts in ${BASE_CURRENCY}` : ''}
         </div>
         <div
           className={
@@ -395,10 +395,10 @@ function NetWorthSection({
             (netWorthMyr < 0 ? 'text-rose-100' : '')
           }
         >
-          RM {fmtNum(netWorthMyr)}
+          {fmtMoney(netWorthMyr)}
         </div>
         <div className="text-xs text-emerald-50/80 mt-1 tabular-nums">
-          RM {fmtNum(assetsMyr)} assets − RM {fmtNum(debtMyr)} CC debt
+          {fmtMoney(assetsMyr)} assets − {fmtMoney(debtMyr)} CC debt
           {multiCurrency ? ' · FX at latest rate' : ''}
         </div>
       </div>
@@ -408,7 +408,7 @@ function NetWorthSection({
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {currencies.map(([cur, t]) => {
             const net = t.assets - t.debt;
-            const sym = cur === 'MYR' ? 'RM' : cur;
+            const sym = currencySymbol(cur);
             return (
               <div
                 key={cur}

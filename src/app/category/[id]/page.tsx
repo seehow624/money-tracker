@@ -4,7 +4,7 @@ import { MonthPicker, MonthTodayButton } from '@/components/MonthPicker';
 import { SwipeMonth } from '@/components/SwipeMonth';
 import { db, schema } from '@/db';
 import { monthTransactions } from '@/lib/queries';
-import { thisMonth, fmtMyr } from '@/lib/format';
+import { thisMonth, fmtMoney } from '@/lib/format';
 import { CategoryIcon } from '@/lib/icons';
 import { colorFor } from '@/lib/colors';
 import { requireSession } from '@/lib/auth';
@@ -93,14 +93,14 @@ export default async function CategoryPage(props: {
                   {cat.isIncome ? 'Earned' : 'Spent'}
                 </div>
                 <div className="text-2xl font-bold tabular-nums">
-                  {fmtMyr(total)}
+                  {fmtMoney(total)}
                 </div>
               </div>
               <div className="text-right">
                 <div className="text-xs text-zinc-500">{log.totalCount} txns</div>
                 {budget > 0 && (
                   <div className="text-xs text-zinc-500 tabular-nums">
-                    of {fmtMyr(budget)}
+                    of {fmtMoney(budget)}
                   </div>
                 )}
               </div>

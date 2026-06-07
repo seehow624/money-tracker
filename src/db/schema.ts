@@ -147,6 +147,8 @@ export const scheduledRules = sqliteTable('scheduled_rules', {
     enum: ['expense', 'income', 'transfer'],
   }).notNull().default('expense'),
   amount: real('amount').notNull(),
+  // Column-level default only; the app always supplies the account/base currency
+  // explicitly, so this literal is effectively never used.
   currency: text('currency').notNull().default('MYR'),
   accountId: integer('account_id').notNull(),
   toAccountId: integer('to_account_id'),

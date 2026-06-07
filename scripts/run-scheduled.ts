@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { db, schema, rawDb } from '../src/db';
 import { eq, and, lte, sql } from 'drizzle-orm';
-import { convertToMyr } from '../src/lib/fx';
+import { convertToBase } from '../src/lib/fx';
 import crypto from 'node:crypto';
 
 function nextMonthSameDay(dateStr: string, dayOfMonth: number): string {
@@ -58,7 +58,7 @@ async function run() {
       }
 
       // Insert transaction
-      const { amountMyr, fxRate } = convertToMyr(
+      const { amountBase: amountMyr, fxRate } = convertToBase(
         rule.amount,
         rule.currency,
         nextDue,

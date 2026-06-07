@@ -1,6 +1,10 @@
-import 'dotenv/config';
+import { config } from 'dotenv';
+config({ path: '.env.local' });
+config(); // fall back to .env
+
 import { db, schema } from '../src/db';
 import { eq, and, gte, sql } from 'drizzle-orm';
+import { BASE_SYMBOL } from '../src/lib/currency';
 
 function getSettings() {
   const row = db
@@ -160,8 +164,8 @@ function checkBudget(enabled: boolean, warningPct: number): string[] {
     if (alreadySent('budget_warning', today)) return [];
     markSent('budget_warning', today);
     return [
-      `🔴 預算爆了！本月已花 RM ${spent.toLocaleString()}（${pct}%）`,
-      `預算 RM ${budget.totalMyr.toLocaleString()} 已超支 RM ${Math.abs(remaining).toLocaleString()}`,
+      `🔴 預算爆了！本月已花 ${BASE_SYMBOL} ${spent.toLocaleString()}（${pct}%）`,
+      `預算 ${BASE_SYMBOL} ${budget.totalMyr.toLocaleString()} 已超支 ${BASE_SYMBOL} ${Math.abs(remaining).toLocaleString()}`,
     ];
   }
 
@@ -169,8 +173,8 @@ function checkBudget(enabled: boolean, warningPct: number): string[] {
     if (alreadySent('budget_warning', today)) return [];
     markSent('budget_warning', today);
     return [
-      `🟡 預算警告：本月已花 RM ${spent.toLocaleString()}（${pct}%）`,
-      `剩餘 RM ${remaining.toLocaleString()} / RM ${budget.totalMyr.toLocaleString()}`,
+      `🟡 預算警告：本月已花 ${BASE_SYMBOL} ${spent.toLocaleString()}（${pct}%）`,
+      `剩餘 ${BASE_SYMBOL} ${remaining.toLocaleString()} / ${BASE_SYMBOL} ${budget.totalMyr.toLocaleString()}`,
     ];
   }
 

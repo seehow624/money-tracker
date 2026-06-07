@@ -2,7 +2,7 @@ import {
   monthSummary,
   monthTransactions,
 } from '@/lib/queries';
-import { fmtMyr, thisMonth, daysInMonth, dayOfMonth } from '@/lib/format';
+import { fmtMoney, thisMonth, daysInMonth, dayOfMonth } from '@/lib/format';
 import { MonthPicker } from '@/components/MonthPicker';
 import { AppBar } from '@/components/AppBar';
 import { DailyLog } from '@/components/DailyLog';
@@ -158,13 +158,13 @@ function HeroCard({
           </div>
           <div className="flex items-baseline gap-1 mt-0.5">
             <span className="text-[34px] font-extrabold tracking-tight leading-none">
-              {fmtMyr(summary.budgetMyr)}
+              {fmtMoney(summary.budgetMyr)}
             </span>
           </div>
         </div>
         <div className="text-right">
           <div className="text-[28px] font-bold tracking-tight leading-none tabular-nums">
-            {fmtMyr(summary.spentSoFar)}
+            {fmtMoney(summary.spentSoFar)}
           </div>
           <div className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mt-0.5">
             spent
@@ -193,8 +193,8 @@ function HeroCard({
           </span>
           <span className="text-[11px] font-medium text-zinc-400 tabular-nums">
             {isOver
-              ? `Over by ${fmtMyr(Math.abs(remaining))}`
-              : `${fmtMyr(remaining)} left`}
+              ? `Over by ${fmtMoney(Math.abs(remaining))}`
+              : `${fmtMoney(remaining)} left`}
           </span>
         </div>
       </div>
@@ -268,7 +268,7 @@ function MiniStat({
   return (
     <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-3 py-2.5 text-center">
       <div className={`text-[17px] font-bold tabular-nums leading-tight ${colorCls}`}>
-        {fmtMyr(value)}
+        {fmtMoney(value)}
       </div>
       <div className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mt-0.5">
         {label}

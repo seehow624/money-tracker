@@ -13,8 +13,9 @@ Drizzle ORM · Tailwind CSS · Recharts**.
 
 ## Features
 
-- Multi-account, multi-currency tracking with automatic FX conversion to a base
-  currency (rates from the free [Frankfurter](https://frankfurter.dev) API).
+- Multi-account, multi-currency tracking with automatic FX conversion to a
+  configurable base currency (set `NEXT_PUBLIC_BASE_CURRENCY`; rates from the
+  free [Frankfurter](https://frankfurter.dev) API).
 - Credit-card aware balances using per-card statement/payment cycles.
 - Monthly budgets with category/subcategory breakdowns and trend charts.
 - Recurring/scheduled transactions and bill/budget reminders.
@@ -50,10 +51,15 @@ All config is environment variables in `.env.local` — see
 
 | Variable | Purpose |
 | --- | --- |
+| `NEXT_PUBLIC_BASE_CURRENCY` | Currency all totals are shown in (default `USD`). Set before adding data. |
 | `APP_USERNAME` / `APP_PASSWORD` | Bootstrap login for the web UI |
 | `APP_SESSION_SECRET` | Signs the session cookie (use a long random string) |
 | `MONEY_TRACKER_API_TOKEN` | Bearer token for `/api/*` (external clients) |
 | `MONEY_TRACKER_DB_PATH` | Optional DB path override (default `./data/money.db`) |
+
+Every account has its own currency; balances and cross-account totals are
+converted into the base currency for display. Pick your base currency **before**
+seeding/adding data — see [`.env.example`](.env.example) for why.
 
 AI provider API keys are **not** environment variables — add them in the UI at
 `/more/ai`; they are stored in the `ai_profiles` table inside your gitignored

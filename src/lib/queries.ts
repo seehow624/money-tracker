@@ -1,6 +1,6 @@
 import { db, rawDb, schema } from '@/db';
 import { and, desc, eq, gte, lte, sql } from 'drizzle-orm';
-import { fxToMyr } from './fx';
+import { fxToBase } from './fx';
 
 export type MonthSummary = {
   month: string;
@@ -911,9 +911,10 @@ export function accountBalances(userId: number): AccountBalance[] {
       ? ccCycleData.balancePayable + ccCycleData.outstanding
       : a.startingBalance + netDelta;
 
-    // Snapshot value in MYR: convert the current native balance at today's rate
-    // (falls back to the most recent prior rate). MYR accounts pass through 1:1.
-    const currentMyr = current * fxToMyr(a.currency, todayIso).rate;
+    // Snapshot value in the base currency: convert the current native balance at
+    // today's rate (falls back to the most recent prior rate). Base-currency
+    // accounts pass through 1:1.
+    const currentMyr = current * fxToBase(a.currency, todayIso).rate;
 
     out.push({
       id: a.id,

@@ -49,7 +49,7 @@ Both `db` (Drizzle) and `rawDb` (raw better-sqlite3) are exported. Most code use
 **Single shared module of read queries.** `src/lib/queries.ts` is the source of truth for every aggregate the UI shows: monthly summaries, category breakdowns, year/cumulative trends, account balances with credit-card cycles, monthly day-grouped logs, fuzzy search. Pages call these from server components — they don't write SQL inline. When adding a new view, add or extend a function here rather than querying the DB from the page.
 
 **Money flow & sign convention.**
-- `transactions.amount` is the native amount in `currency`; `amountMyr = amount * fxRate` is the base-currency equivalent at the transaction date. Conversion happens in `src/lib/fx.ts` (`convertToMyr`), which falls back to the most recent prior rate when the exact date is missing (Frankfurter has no weekend rates).
+- `transactions.amount` is the native amount in `currency`; `amountMyr` (column `amount_myr`, kept under its historical name = "amount in **base currency**") `= amount * fxRate` at the transaction date. Conversion happens in `src/lib/fx.ts` (`convertToBase`/`fxToBase`), which falls back to the most recent prior rate when the exact date is missing (Frankfurter has no weekend rates). The base currency is `BASE_CURRENCY` in `src/lib/currency.ts`, read from `NEXT_PUBLIC_BASE_CURRENCY` (default USD).
 - `transfer` rows have both `account_id` (source) and `to_account_id` (destination). Income/expense rows only use `account_id`. `categoryId` is null for transfers.
 - For non-CC accounts, balance = `startingBalance + Σincome − Σexpense − Σtransfer_out + Σtransfer_in` (over rows on/after `startingBalanceDate`).
 - For credit cards, the math inverts and uses `statementDay` / `paymentDay` to compute a cycle (`ccCycle()` in `queries.ts`). The displayed balance is `balancePayable + outstanding`. `startingBalance` on a CC is a manual adjustment knob — set it negative to absorb cumulative imbalance from incomplete history. Don't "fix" the sign without understanding this.
@@ -75,6 +75,6 @@ Self-host on any always-on machine. Run `npm run build && npm start` (or `npm ru
 ## Conventions specific to this codebase
 
 - Dates are ISO `YYYY-MM-DD` strings everywhere; months are `YYYY-MM`. Avoid `Date` arithmetic on local time — use `Date.UTC()` and `.toISOString().slice(0, 10)` (see `lastStatementDate`, `nextDateOnDay` in queries.ts).
-- The app is multi-currency: each account has a `currency`, and amounts are converted to a single base currency (`fmtMyr`) for cross-account totals. Conversion is real, not cosmetic.
+- The app is multi-currency: each account has a `currency`, and amounts are converted to a single base currency for cross-account totals. Display goes through `fmtMoney`/`currencySymbol`/`fmtCurrency` in `src/lib/currency.ts` (a pure, base-currency-aware module usable from client components). Conversion is real, not cosmetic.
 - `paid_by` is free-text but conventionally `'me'`, `'mom'`, `'dad'`. The `paidByOthers` aggregation excludes `'me'`.
 - `scripts/*.ts` referenced in `package.json` are the canonical maintenance scripts. `scripts/parse-tng.mjs` is an example statement parser — adapt it for your own statement formats.

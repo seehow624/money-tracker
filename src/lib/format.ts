@@ -1,13 +1,11 @@
-export function fmtMyr(n: number): string {
-  return `RM ${n.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
+// Currency helpers live in ./currency (pure, base-currency aware). Re-exported
+// here so existing `@/lib/format` imports keep working.
+export { fmtMoney, fmtCurrency, currencySymbol, BASE_CURRENCY, BASE_SYMBOL } from './currency';
 
-export function currencySymbol(code: string): string {
-  return code === 'MYR' ? 'RM' : code;
-}
+import { BASE_LOCALE } from './currency';
 
 export function fmtNum(n: number, digits = 2): string {
-  return n.toLocaleString('en-MY', {
+  return n.toLocaleString(BASE_LOCALE, {
     minimumFractionDigits: digits,
     maximumFractionDigits: digits,
   });

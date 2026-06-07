@@ -1,7 +1,7 @@
 'use client';
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { fmtMyr } from '@/lib/format';
+import { fmtMoney } from '@/lib/format';
 import { paletteFor } from '@/lib/palette';
 
 type Slice = {
@@ -126,7 +126,7 @@ export function MonthlyPie({ data }: { data: Slice[] }) {
                     {p.icon} {p.name}
                   </div>
                   <div className="text-zinc-500 text-xs tabular-nums">
-                    {fmtMyr(p.spent)} · {pct.toFixed(1)}%
+                    {fmtMoney(p.spent)} · {pct.toFixed(1)}%
                   </div>
                 </div>
               );

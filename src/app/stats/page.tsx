@@ -11,7 +11,7 @@ import {
   type Period,
   type DateRange,
 } from '@/lib/queries';
-import { fmtMyr, thisMonth } from '@/lib/format';
+import { fmtMoney, thisMonth } from '@/lib/format';
 import { colorFor } from '@/lib/colors';
 import { MonthPicker, MonthTodayButton } from '@/components/MonthPicker';
 import { MonthlyPie } from '@/components/MonthlyPie';
@@ -211,7 +211,7 @@ export default async function StatsPage({
                       : 'text-zinc-700 dark:text-zinc-300')
                   }
                 >
-                  {fmtMyr(summary.income)}
+                  {fmtMoney(summary.income)}
                 </div>
               </Link>
               <Link
@@ -240,7 +240,7 @@ export default async function StatsPage({
                       : 'text-zinc-700 dark:text-zinc-300')
                   }
                 >
-                  {fmtMyr(summary.spentSoFar + summary.scheduled)}
+                  {fmtMoney(summary.spentSoFar + summary.scheduled)}
                 </div>
               </Link>
             </div>
@@ -471,7 +471,7 @@ function CategoryList({
                 <div className="text-xs text-zinc-400 tabular-nums">
                   {c.txnCount} txns
                   {!c.isIncome && c.budget
-                    ? ` · budget ${fmtMyr(c.budget)}`
+                    ? ` · budget ${fmtMoney(c.budget)}`
                     : ''}
                 </div>
               </div>
@@ -482,7 +482,7 @@ function CategoryList({
                 {pct.toFixed(0)}%
               </span>
               <div className="text-right">
-                <div className="tabular-nums font-medium">{fmtMyr(c.spent)}</div>
+                <div className="tabular-nums font-medium">{fmtMoney(c.spent)}</div>
                 <div className="text-xs text-zinc-400 tabular-nums">
                   {pct.toFixed(1)}%
                 </div>

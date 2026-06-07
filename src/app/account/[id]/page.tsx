@@ -4,7 +4,7 @@ import { MonthPicker, MonthTodayButton } from '@/components/MonthPicker';
 import { SwipeMonth } from '@/components/SwipeMonth';
 import { db, schema } from '@/db';
 import { accountMonthLog, accountBalances } from '@/lib/queries';
-import { thisMonth, fmtNum } from '@/lib/format';
+import { thisMonth, fmtNum, currencySymbol } from '@/lib/format';
 import { AccountTypeIcon } from '@/lib/icons';
 import { requireSession } from '@/lib/auth';
 import { eq, and } from 'drizzle-orm';
@@ -101,7 +101,7 @@ export default async function AccountPage(props: {
                     (bal && bal.current < 0 ? 'text-rose-600' : '')
                   }
                 >
-                  {acct.currency === 'MYR' ? 'RM' : acct.currency}{' '}
+                  {currencySymbol(acct.currency)}{' '}
                   {bal ? fmtNum(bal.current) : '—'}
                 </div>
                 {bal && bal.ccCycle ? (
@@ -132,7 +132,7 @@ export default async function AccountPage(props: {
                       (bal.ccCycle.balancePayable > 0 ? 'text-rose-600' : '')
                     }
                   >
-                    RM {fmtNum(bal.ccCycle.balancePayable)}
+                    {currencySymbol(acct.currency)} {fmtNum(bal.ccCycle.balancePayable)}
                   </div>
                 </div>
                 <div>
@@ -145,7 +145,7 @@ export default async function AccountPage(props: {
                       (bal.ccCycle.outstanding > 0 ? 'text-rose-500' : '')
                     }
                   >
-                    RM {fmtNum(bal.ccCycle.outstanding)}
+                    {currencySymbol(acct.currency)} {fmtNum(bal.ccCycle.outstanding)}
                   </div>
                 </div>
               </div>

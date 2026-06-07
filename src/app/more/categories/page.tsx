@@ -6,6 +6,7 @@ import { CategoryIcon } from '@/lib/icons';
 import { colorFor } from '@/lib/colors';
 import { saveCategories } from './actions';
 import { requireSession } from '@/lib/auth';
+import { BASE_SYMBOL } from '@/lib/format';
 
 export const dynamic = 'force-dynamic';
 
@@ -116,7 +117,7 @@ export default async function CategoriesPage({
                       Monthly budget
                     </label>
                     <div className="flex items-center gap-2">
-                      <span className="text-zinc-500 text-sm">RM</span>
+                      <span className="text-zinc-500 text-sm">{BASE_SYMBOL}</span>
                       <input
                         type="number"
                         name={`budget_${c.id}`}

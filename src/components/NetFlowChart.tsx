@@ -12,7 +12,7 @@ import {
   ReferenceLine,
   Legend,
 } from 'recharts';
-import { fmtMyr } from '@/lib/format';
+import { fmtMoney } from '@/lib/format';
 
 type Point = {
   month: string;
@@ -64,10 +64,10 @@ export function NetFlowChart({ data }: { data: Point[] }) {
                 <div className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md px-3 py-2 text-sm shadow-lg">
                   <div className="font-medium mb-1">{label}</div>
                   <div className="text-emerald-600 text-xs tabular-nums">
-                    + {fmtMyr(p.income)}
+                    + {fmtMoney(p.income)}
                   </div>
                   <div className="text-rose-600 text-xs tabular-nums">
-                    − {fmtMyr(p.expense)}
+                    − {fmtMoney(p.expense)}
                   </div>
                   <div
                     className={
@@ -76,11 +76,11 @@ export function NetFlowChart({ data }: { data: Point[] }) {
                     }
                   >
                     net {p.net >= 0 ? '+' : ''}
-                    {fmtMyr(p.net)}
+                    {fmtMoney(p.net)}
                   </div>
                   <div className="text-blue-600 text-xs tabular-nums mt-1 pt-1 border-t border-zinc-200 dark:border-zinc-700">
                     Σ {p.cumulative >= 0 ? '+' : ''}
-                    {fmtMyr(p.cumulative)}
+                    {fmtMoney(p.cumulative)}
                   </div>
                 </div>
               );

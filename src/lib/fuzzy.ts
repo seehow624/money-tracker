@@ -2,14 +2,16 @@
 // These are EXAMPLES that match the seed accounts in scripts/seed.ts — edit them
 // to match your own account names.
 const ACCOUNT_ALIASES: Record<string, string> = {
-  checking: 'Main Checking',
-  main: 'Main Checking',
+  bank: 'Bank',
+  checking: 'Bank',
   savings: 'Savings',
   save: 'Savings',
   foreign: 'Foreign Account',
-  visa: 'Visa Card',
-  mc: 'Mastercard',
-  mastercard: 'Mastercard',
+  cc: 'Credit Card',
+  card: 'Credit Card',
+  credit: 'Credit Card',
+  visa: 'Credit Card',
+  mastercard: 'Credit Card',
   wallet: 'E-Wallet',
   ewallet: 'E-Wallet',
   cash: 'Cash',

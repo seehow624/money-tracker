@@ -1,6 +1,6 @@
 import { AppBar } from '@/components/AppBar';
 import { recurringDetections } from '@/lib/queries';
-import { fmtMyr, fmtNum } from '@/lib/format';
+import { fmtMoney, fmtNum } from '@/lib/format';
 import { RefreshCw, Calendar } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -26,7 +26,7 @@ export default async function RecurringPage() {
                 Estimated monthly
               </div>
               <div className="text-2xl font-bold tabular-nums">
-                {fmtMyr(monthlyTotal)}
+                {fmtMoney(monthlyTotal)}
               </div>
             </div>
             <div className="text-right">
@@ -68,7 +68,7 @@ export default async function RecurringPage() {
                 </div>
                 <div className="text-right">
                   <div className="text-sm font-medium tabular-nums">
-                    RM {fmtNum(h.amount)}
+                    {fmtMoney(h.amount)}
                   </div>
                   <div className="text-xs text-zinc-400 tabular-nums">
                     Σ {fmtNum(h.totalPaid)}

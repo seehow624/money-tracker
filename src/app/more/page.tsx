@@ -1,5 +1,6 @@
 import { AppBar } from '@/components/AppBar';
 import { db, schema } from '@/db';
+import { BASE_CURRENCY, BASE_SYMBOL, fmtMoney } from '@/lib/currency';
 import { sql, eq, and, isNull } from 'drizzle-orm';
 import Link from 'next/link';
 import {
@@ -150,7 +151,7 @@ export default async function MorePage() {
                 key={p.who}
                 Icon={Heart}
                 title={p.who.charAt(0).toUpperCase() + p.who.slice(1)}
-                subtitle={`${p.n} transactions · RM ${(p.total ?? 0).toLocaleString()}`}
+                subtitle={`${p.n} transactions · ${fmtMoney(p.total ?? 0)}`}
                 href={`/paid-by/${p.who}`}
               />
             ))}
@@ -181,7 +182,7 @@ export default async function MorePage() {
             title="Budget"
             subtitle={
               budget
-                ? `RM ${budget.totalMyr.toLocaleString()} for ${month}`
+                ? `${fmtMoney(budget.totalMyr)} for ${month}`
                 : 'Not set for this month'
             }
             href="/more/budget"
@@ -198,9 +199,9 @@ export default async function MorePage() {
           <Row
             Icon={DollarSign}
             title="Main Currency"
-            subtitle="MYR (RM)"
+            subtitle={`${BASE_CURRENCY} (${BASE_SYMBOL}) · set via NEXT_PUBLIC_BASE_CURRENCY`}
             href="#"
-            comingSoon
+            staticInfo
           />
           <Row
             Icon={Coins}

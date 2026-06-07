@@ -1,4 +1,4 @@
-import { fmtNum, currencySymbol } from '@/lib/format';
+import { fmtNum, currencySymbol, BASE_CURRENCY } from '@/lib/format';
 import { colorFor } from '@/lib/colors';
 import { CategoryIcon, TransferIcon } from '@/lib/icons';
 import { Heart } from 'lucide-react';
@@ -16,7 +16,7 @@ export function DailyLog({
   paidByOthers = {},
   labels,
   linkReturnTo,
-  aggregateCurrency = 'MYR',
+  aggregateCurrency = BASE_CURRENCY,
 }: {
   days: DayGroup[];
   totalIncome: number;

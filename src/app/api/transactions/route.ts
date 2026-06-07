@@ -3,7 +3,7 @@ import { checkAuth, getAdminUserId } from '@/lib/api-auth';
 import { db, schema } from '@/db';
 import { eq, desc, and, gte, lte } from 'drizzle-orm';
 import { resolveAccount, resolveCategory } from '@/lib/fuzzy';
-import { convertToMyr } from '@/lib/fx';
+import { convertToBase } from '@/lib/fx';
 import { revalidatePath } from 'next/cache';
 import crypto from 'node:crypto';
 
@@ -182,7 +182,7 @@ export async function POST(req: Request) {
   const paidBy = (body.paid_by ? String(body.paid_by) : 'me').trim() || 'me';
   const notes = body.notes ? String(body.notes).trim() : '';
   const currency = body.currency ? String(body.currency) : account.currency;
-  const { amountMyr, fxRate } = convertToMyr(amount, currency, date);
+  const { amountBase: amountMyr, fxRate } = convertToBase(amount, currency, date);
 
   const fingerprint = `luna:${Date.now()}:${crypto.randomBytes(6).toString('hex')}`;
 

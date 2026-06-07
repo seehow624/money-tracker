@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import Link from 'next/link';
-import { fmtNum } from '@/lib/format';
+import { fmtMoney } from '@/lib/format';
 import { colorFor } from '@/lib/colors';
 import { CategoryIcon, TransferIcon } from '@/lib/icons';
 import { CheckSquare, Square, Trash2, Heart, Tag, X } from 'lucide-react';
@@ -170,7 +170,7 @@ export function SearchResults({
                 }
               >
                 {t.type === 'income' ? '+' : t.type === 'expense' ? '−' : ''}
-                RM {fmtNum(t.amountMyr)}
+                {fmtMoney(t.amountMyr)}
               </span>
             </div>
           );
