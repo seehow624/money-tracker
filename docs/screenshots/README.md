@@ -10,8 +10,9 @@ export MONEY_TRACKER_DB_PATH=/tmp/demo.db
 
 # 2. Build a populated demo install
 npm run db:migrate
-APP_USERNAME=demo APP_PASSWORD=demo12345 npm run db:seed   # also creates the login
-npm run db:seed-demo                                       # a few months of sample txns
+APP_USERNAME=demo APP_PASSWORD=demo12345 npm run db:seed-admin   # creates the login
+npm run db:seed                                                  # accounts + categories
+npm run db:seed-demo                                            # a few months of sample txns
 
 # 3. Run it
 npm run dev        # http://localhost:3000  (log in as demo / demo12345)

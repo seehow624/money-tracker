@@ -44,14 +44,20 @@ git clone <your-fork-url> money-tracker
 cd money-tracker
 npm install
 
-cp .env.example .env.local       # then edit the values (see below)
+cp .env.example .env.local       # then edit the values — set APP_USERNAME,
+                                 # APP_PASSWORD and APP_SESSION_SECRET (see below)
 
 npm run db:migrate               # create the SQLite schema
+npm run db:seed-admin            # create your login from APP_USERNAME / APP_PASSWORD
 npm run db:seed                  # seed example accounts + categories (edit scripts/seed.ts first)
 npm run db:seed-demo             # optional: sample transactions to explore with
 
-npm run dev                      # http://localhost:3000
+npm run dev                      # http://localhost:3000  (log in with APP_USERNAME / APP_PASSWORD)
 ```
+
+> The login is the user row created by `db:seed-admin` — there's no default
+> account. If you see "Invalid username or password", you haven't run it yet (or
+> `.env.local` had no `APP_USERNAME`/`APP_PASSWORD` when you did).
 
 `npm run db:seed` inserts **example** accounts and categories. Open
 `scripts/seed.ts` and replace them with your own before seeding, or just add/edit
