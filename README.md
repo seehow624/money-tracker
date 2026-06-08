@@ -13,10 +13,6 @@ Drizzle ORM · Tailwind CSS · Recharts**.
 
 ## Screenshots
 
-> To generate these, run `npm run db:seed-demo` (sample data) then capture the
-> pages below into `docs/screenshots/`. See
-> [`docs/screenshots/README.md`](docs/screenshots/README.md) for exact steps.
-
 | Dashboard | Stats & charts |
 | --- | --- |
 | ![Dashboard](docs/screenshots/dashboard.png) | ![Stats](docs/screenshots/stats.png) |
@@ -37,19 +33,37 @@ Drizzle ORM · Tailwind CSS · Recharts**.
   OpenAI-compatible endpoint (Ollama, OpenAI, OpenRouter, …). Provider keys live
   in your local database, never in the repo.
 
+## Requirements
+
+- **[Node.js](https://nodejs.org) 20 or newer** (includes `npm`) and **[git](https://git-scm.com)**.
+  Check with `node -v` — if it prints `v20.x` or higher you're good.
+- That's it. The database is a local SQLite file; there's nothing else to install
+  or provision. It runs on macOS, Linux, and Windows.
+
+This is a web app you run yourself (not a packaged desktop installer) — you'll
+use a terminal for the steps below.
+
 ## Quick start
+
+Copy-paste this whole block into your terminal:
 
 ```bash
 git clone https://github.com/seehow624/money-tracker.git
 cd money-tracker
-npm install && npm run setup && npm run dev
+npm install
+npm run setup
+npm run dev
 ```
 
-`npm run setup` does everything for you: generates `.env.local` (with a random
+`npm run setup` does everything for you: it generates `.env.local` (with a random
 admin password and session secret), creates the database, your login, and a set
-of example accounts + categories. It **prints the generated login** — copy it,
-then open http://localhost:3000. (Re-running is safe: it never overwrites an
-existing `.env.local`, and seeding is idempotent.)
+of example accounts + categories. **It prints the generated login** — for
+example `Login: admin / HpNTuuvTLl9y9hXR` — so copy that.
+
+When `npm run dev` is running, open **http://localhost:3000** and sign in with
+that login. You can change the password in the app under **More → Change
+password**. (Re-running `setup` is safe: it never overwrites an existing
+`.env.local`, and seeding is idempotent.)
 
 Optional extras:
 
@@ -63,12 +77,22 @@ npm run db:seed-demo   # add a few months of sample transactions to explore
 > see "Invalid username or password", the admin row wasn't created — run
 > `npm run db:seed-admin` (or `npm run setup`).
 
-`npm run db:seed` inserts **example** accounts and categories. Open
-`scripts/seed.ts` and replace them with your own before seeding, or just add/edit
-accounts and categories in the UI afterwards. `npm run db:seed-demo` adds a few
-months of fake transactions so the dashboard and charts aren't empty — re-run or
-just delete those rows (they have `source = 'demo'`) once you start entering real
-data.
+`npm run setup` seeds **example** accounts and categories. Edit `scripts/seed.ts`
+before running it to start from your own, or just add/edit them in the UI later.
+`npm run db:seed-demo` adds a few months of fake transactions so the dashboard
+and charts aren't empty — delete those rows (they have `source = 'demo'`) once
+you start entering real data.
+
+## Updating to a newer version
+
+```bash
+git pull
+npm install        # in case dependencies changed
+npm run db:migrate # apply any new database migrations
+```
+
+Your data lives in `data/money.db`, which is never touched by `git pull` — back
+it up by copying that file (the bundled `npm run db:daily-backup` does this too).
 
 ## Configuration
 
