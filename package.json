@@ -10,6 +10,7 @@
     "start": "next start",
     "start:lan": "next start -H 0.0.0.0 -p 3000",
     "db:generate": "drizzle-kit generate",
+    "setup": "node scripts/setup.mjs",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed-admin": "tsx scripts/seed-admin.ts",
     "db:seed": "tsx scripts/seed.ts",

@@ -40,24 +40,28 @@ Drizzle ORM · Tailwind CSS · Recharts**.
 ## Quick start
 
 ```bash
-git clone <your-fork-url> money-tracker
+git clone https://github.com/seehow624/money-tracker.git
 cd money-tracker
-npm install
-
-cp .env.example .env.local       # then edit the values — set APP_USERNAME,
-                                 # APP_PASSWORD and APP_SESSION_SECRET (see below)
-
-npm run db:migrate               # create the SQLite schema
-npm run db:seed-admin            # create your login from APP_USERNAME / APP_PASSWORD
-npm run db:seed                  # seed example accounts + categories (edit scripts/seed.ts first)
-npm run db:seed-demo             # optional: sample transactions to explore with
-
-npm run dev                      # http://localhost:3000  (log in with APP_USERNAME / APP_PASSWORD)
+npm install && npm run setup && npm run dev
 ```
 
-> The login is the user row created by `db:seed-admin` — there's no default
-> account. If you see "Invalid username or password", you haven't run it yet (or
-> `.env.local` had no `APP_USERNAME`/`APP_PASSWORD` when you did).
+`npm run setup` does everything for you: generates `.env.local` (with a random
+admin password and session secret), creates the database, your login, and a set
+of example accounts + categories. It **prints the generated login** — copy it,
+then open http://localhost:3000. (Re-running is safe: it never overwrites an
+existing `.env.local`, and seeding is idempotent.)
+
+Optional extras:
+
+```bash
+npm run db:seed-demo   # add a few months of sample transactions to explore
+```
+
+> Prefer to configure things by hand? Copy `.env.example` to `.env.local`, set
+> `APP_USERNAME` / `APP_PASSWORD` / `APP_SESSION_SECRET`, then run `npm run
+> db:migrate`, `npm run db:seed-admin`, `npm run db:seed` yourself. If you ever
+> see "Invalid username or password", the admin row wasn't created — run
+> `npm run db:seed-admin` (or `npm run setup`).
 
 `npm run db:seed` inserts **example** accounts and categories. Open
 `scripts/seed.ts` and replace them with your own before seeding, or just add/edit
