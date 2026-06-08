@@ -11,7 +11,6 @@ import {
   Wallet,
   Target,
   Database,
-  Coins,
   Bell,
   Network,
   ChevronRight,
@@ -205,13 +204,6 @@ export default async function MorePage() {
               code,
               symbol: currencySymbol(code),
             }))}
-          />
-          <Row
-            Icon={Coins}
-            title="Sub Currency"
-            subtitle="SGD, USD (FX rates fetched daily)"
-            href="#"
-            comingSoon
           />
           {isAdmin && (
             <>
