@@ -1,5 +1,8 @@
 # Money Tracker
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20-339933?logo=node.js&logoColor=white)](https://nodejs.org)
+
 A self-hosted, single-user personal finance tracker. Log income, expenses and
 transfers across multiple accounts and currencies; track credit-card statement
 cycles; set monthly budgets; and review trends — all backed by a single local
